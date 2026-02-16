@@ -1,0 +1,278 @@
+html {
+  scroll-behavior: smooth;
+}
+
+#menu-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+#menu-logo:hover {
+    filter: invert(1) hue-rotate(180deg);
+    border-radius: 50px !important;
+}
+
+.rounded-logo {
+    margin-left: 4.5rem;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.transparent-image {
+    border-radius: 50%;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .rounded-logo {
+        margin-left: 6.5rem;
+        width: 60px;
+        height: 60px;
+    }
+
+}
+
+
+.light-blue-bg {
+    background-color: #d0f0fd;
+    /* Light blue */
+    color: #000;
+    /* Ensure text stays readable */
+}
+
+.blue-text {
+    color: #007BFF !important;
+}
+
+#footer_social a {
+    margin: 0 10px;
+    color: #fff;
+    /* or #000 depending on your background */
+}
+
+.buttonregister {
+    background-color: #d0f0fd;
+}
+
+.cover-400 {
+    height: 400px;
+    object-fit: cover;
+}
+
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+}
+
+.swiper {
+    width: 100%;
+    height: auto;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #000;
+    /* Or any color matching your theme */
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+}
+
+.part-img-wrapper {
+    width: 100%;
+    height: 220px;
+    /* fix image height */
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.part-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* crop images but keep proportions */
+    transition: transform 0.3s ease;
+}
+
+.part-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay for Quick View */
+.part-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+.part-card:hover .overlay {
+    opacity: 4;
+}
+
+.partner-logos {
+    overflow: hidden;
+    position: relative;
+}
+
+.logos-slider {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.logos-track {
+    display: flex;
+    width: calc(250px * 10);
+    /* adjust if you add more logos */
+    animation: scroll 25s linear infinite;
+}
+
+.logos-track:hover {
+    animation-play-state: paused;
+}
+
+.logos-track a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+    flex: 0 0 auto;
+}
+
+.logos-track img {
+    max-height: 100px;
+    /* enlarge logos */
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logos-track img:hover {
+    transform: scale(1.15);
+    /* slight zoom on hover */
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .logos-track img {
+        max-height: 50px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logos-track img {
+        max-height: 40px;
+        padding: 0 10px;
+    }
+}
+
+.support-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.support-card:hover,
+.support-card:focus-within {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    border-color: #007bff;
+}
+
+@media (hover: none) {
+    .support-card:active {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+}
+
+/* Floating animation */
+@keyframes slide {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(15px);
+    }
+}
+
+.animate-slide {
+    animation: slide 3s ease-in-out infinite;
+}
+
+.featured-icon-box {
+    position: relative;
+    border-top: 4px solid #007bff;
+    /* Blue line at the top */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Optional: add hover effect */
+.featured-icon-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+    /* Reduce carousel height */
+    #skydiveCarousel .carousel-item {
+        max-height: 400px;
+    }
+    #skydiveCarousel .carousel-img {
+        object-fit: cover;
+        height: 400px;
+    }
+    #skydiveCarousel .carousel-caption h2 {
+        font-size: 2rem;
+    }
