@@ -69,7 +69,7 @@ h2 {
 
 .btn-outline-secondary,
 .btn-tertiary {
-    border: 2px #000;
+    border: 2px #30517e;
     background-color: transparent;
     color: #ffda26;
     font-weight: 400
@@ -129,8 +129,8 @@ h2 {
     height: 40px !important;
     padding: 2px 20px 5px !important;
     border: 1px solid transparent !important;
-    background-color: #ffda26 !important;
-    color: #000 !important;
+    background-color: #000 !important;
+    color: #2e85d6 !important;
     font-weight: 700 !important;
     font-size: 1.5em !important
 }
@@ -139,8 +139,8 @@ h2 {
 .swal2-deny {
     border: 1px solid #000 !important;
     background-color: #000 !important;
-    color: #ffda26 !important;
-    font-weight: 400 !important
+    color: #2e85d6 !important;
+    font-weight: 700 !important
 }
 
 .login-modal-content {
@@ -190,7 +190,7 @@ h2 {
 }
 
 .socialButton-customizable .social-logo {
-    display: inline-block;
+    display: inline-block;      
     height: 100%;
     margin-right: 12px;
     padding: 9px;

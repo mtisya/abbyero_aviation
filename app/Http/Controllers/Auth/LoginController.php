@@ -19,39 +19,6 @@ class LoginController extends Controller
     /**
      * Handle login request and redirect based on user role.
      */
-    public function login1(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            // Redirect user based on role
-            $role = Auth::user()->role;
-
-            switch ($role) {
-                case 'admin':
-                    return redirect()->intended('/admin/dashboard');
-                case 'instructor':
-                    return redirect()->intended('/instructor/dashboard');
-                case 'user':
-                default:
-                    return redirect()->intended('/dashboard');
-            }
-            
-        }
-
-        // dd(Auth::user()->role);
-
-
-        return back()->withErrors([
-            'email' => 'Invalid login credentials.',
-        ])->onlyInput('email');
-    }
-
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -72,9 +39,21 @@ class LoginController extends Controller
                 ])->onlyInput('email');
             }
 
-            // ⛔ Block unapproved users
-            if ($user->status !== 'approved') {
+            // ⛔ Block inactive users
+            if ($user->status === 'inactive') {
+
                 Auth::logout();
+
+                return back()->withErrors([
+                    'email' => 'Your account has been deactivated. Please contact admin.',
+                ])->onlyInput('email');
+            }
+
+            // ⛔ Block pending users
+            if ($user->status === 'pending') {
+
+                Auth::logout();
+
                 return back()->withErrors([
                     'email' => 'Your account is pending approval by admin.',
                 ])->onlyInput('email');
@@ -87,6 +66,9 @@ class LoginController extends Controller
 
                 case 'instructor':
                     return redirect()->intended('/instructor/dashboard');
+
+                case 'student':
+                    return redirect()->intended('/student/dashboard');
 
                 default:
                     return redirect()->intended('/dashboard');

@@ -6,6 +6,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\UserBlockTime;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -19,6 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role', // This allows mass assignment of role
+        'status', // This allows mass assignment of status
+        'profile_image', // This allows mass assignment of profile_image
     ];
 
     /**
@@ -28,6 +34,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+    public function flightSchedules()
+    {
+        return $this->hasMany(FlightSchedule::class, 'user_id');
+    }
 
     /**
      * The attributes that should be type-cast.
@@ -52,26 +62,72 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === $role;
     }
 
-    // app/Models/User.php
-
     public function bookings()
     {
         return $this->hasMany(Booking::class);
     }
 
-    // app/Models/User.php
-
     public function maintenances()
     {
         return $this->hasMany(Maintenance::class);
     }
-    // app/Models/User.php
+
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
     public function skydiveBookings()
     {
-        return $this->hasMany(SkydiveBooking::class, 'user_id'); 
+        return $this->hasMany(SkydiveBooking::class, 'user_id');
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+
+    }
+    public function studentProfile()
+    {
+        return $this->hasOne(Student::class, 'user_id');
+    }
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class);
+    }
+
+    public function application(): HasOne
+    {
+        return $this->hasOne(Application::class);
+    }
+    public function blockTime()
+    {
+        return $this->hasOne(
+            UserBlockTime::class,
+            'user_id'
+        );
+    }
+    public function userBlockTime()
+    {
+        return $this->hasOne(UserBlockTime::class);
+    }
+
+    public function dispatches(): HasMany
+    {
+        return $this->hasMany(
+            Dispatch::class,
+            'pilot_id'
+        );
+    }
+
+    public function logbooks(): HasMany
+    {
+        return $this->hasMany(
+            Logbook::class,
+            'user_id'
+        );
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

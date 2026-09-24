@@ -43,6 +43,6 @@ class VerifyEmailController extends Controller
         }
 
         // Approved + verified → normal login
-        return redirect('/dashboard')->with('verified', true)->with('message', 'Your email has been verified successfully!');
+        return redirect('/login')->with('verified', true)->with('message', 'Your email has been verified successfully!');
     }
 }

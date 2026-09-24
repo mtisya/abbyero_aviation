@@ -1,90 +1,226 @@
 @extends('layoutinstructor')
 
 @section('content')
-<div class="container mt-5 mb-5">
-    <h2 class="mb-4">Instructor Account</h2>
+    <div class="container mt-5 mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+            {{-- Title --}}
+            <div class="d-flex align-items-center gap-3 mb-3">
+    
+                <!-- Profile image -->
+                @include('components.profile-image')
 
-    <div class="accordion" id="accountAccordion">
+                <!-- Title -->
+                <h3 class="mb-0 text-center text-md-start">
+                    Instructor Profile
+                </h3>
 
-        <div class="row">
-            <!-- Account Details -->
-            <div class="col-md-6">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingAccount">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseAccount" aria-expanded="true" aria-controls="collapseAccount">
-                            Account Details
-                        </button>
-                    </h2>
-                    <div id="collapseAccount" class="accordion-collapse collapse show"
-                         aria-labelledby="headingAccount" data-bs-parent="#accountAccordion">
-                        <div class="accordion-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" value="{{ Auth::user()->email }}" readonly>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Role</label>
-                                    <input type="text" class="form-control" value="{{ ucfirst(Auth::user()->role) }}" readonly>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Joined On</label>
-                                    <input type="text" class="form-control" value="{{ Auth::user()->created_at->format('F j, Y') }}" readonly>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <a href="{{ route('password.request') }}" class="btn btn-outline-primary">Change Password</a>
-                                <a href="{{ route('logout') }}" class="btn btn-outline-danger"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Instructor -->
-            <div class="col-md-6">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingInstructor">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseInstructor" aria-expanded="false" aria-controls="collapseInstructor">
-                            Instructor
-                        </button>
-                    </h2>
-                    <div id="collapseInstructor" class="accordion-collapse collapse"
-                         aria-labelledby="headingInstructor" data-bs-parent="#accountAccordion">
-                        <div class="accordion-body">
-                            <p>You can add your instructor's email address here. Adding an instructor will allow them to monitor your course progress.</p>
-                            <input id="cfi_email_address" type="email" class="form-control mb-3">
-                            <div id="added_instructor"></div>
-                            <div id="student-invitations" class="d-flex flex-column gap-2 mb-3"></div>
-                            <button class="btn btn-primary" id="save-instructor" style="display:none">Add Instructor</button>
-                            <button class="btn btn-danger" id="remove-instructor" style="display:none">Remove Instructor</button>
-                        </div>
-                    </div>
-                </div>
+           {{-- Action Buttons --}}
+           <div class="d-flex flex-column flex-sm-row gap-2 w-100 justify-content-center justify-content-sm-end">
+
+                <!-- Flight Schedules -->
+                <a href="{{ route('flight.schedules') }}"
+                class="btn shadow-sm btn-info flex-fill flex-sm-auto">
+                    <i class="bi bi-airplane-engines me-1"></i>
+                     Flight Schedules
+                </a>
+
+                <!-- Aircraft Maintenance -->
+                <a href="{{ route('aircraftmaintenance.dashboard') }}"
+                class="btn shadow-sm btn-primary flex-fill flex-sm-auto">
+                    <i class="bi bi-tools me-1"></i>
+                    Aircraft Maintenance
+                </a>
+
+                <!-- Logbooks -->
+                <a href="{{ route('logbooks.index') }}"
+                class="btn shadow-sm btn-success flex-fill flex-sm-auto">
+                    <i class="bi bi-journal-text me-1"></i>
+                    Logbooks
+                </a>
+
+                <!-- Aircraft Parts -->
+                <a href="{{ route('aircraft_parts.list') }}"
+                class="btn shadow-sm btn-warning text-dark flex-fill flex-sm-auto">
+                    <i class="bi bi-gear-wide-connected me-1"></i>
+                    Aircraft Parts
+                </a>
+
+                <!-- User Management -->
+                <a href="{{ route('users.list') }}"
+                class="btn shadow-sm btn-dark flex-fill flex-sm-auto">
+                    <i class="bi bi-people-fill me-1"></i>
+                    Manage Users
+                </a>
+
             </div>
+
         </div>
 
-        <div class="row mt-3">
-            <!-- Flight School Invitations -->
-            <div class="col-md-6">
+
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+
+        <script>
+            setTimeout(function () {
+                let alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500); // remove after fade
+                }
+            }, 5000); // 5 seconds
+        </script>
+        <div class="accordion" id="accountAccordion">
+
+            <div class="row">
+                <!-- Account Details -->
+                <div class="col-md-6">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAccount">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseAccount" aria-expanded="true" aria-controls="collapseAccount">
+                                Account Details
+                            </button>
+                        </h2>
+                        <div id="collapseAccount" class="accordion-collapse collapse show" aria-labelledby="headingAccount"
+                            data-bs-parent="#accountAccordion">
+                            <div class="accordion-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" value="{{ Auth::user()->email }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Role</label>
+                                        <input type="text" class="form-control" value="{{ ucfirst(Auth::user()->role) }}"
+                                            readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Joined On</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ Auth::user()->created_at->format('F j, Y') }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="{{ route('password.request') }}" class="btn btn-outline-primary">Change
+                                        Password</a>
+                                    <a href="{{ route('logout') }}" class="btn btn-outline-danger"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        Logout
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-toggle="collapse"
+                                data-bs-target="#assignedStudents">
+                                My Students
+                            </button>
+                        </h2>
+
+                        <div id="assignedStudents" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+
+                                @if($students->isEmpty())
+                                    <p class="text-muted">No students assigned yet.</p>
+                                @else
+                                    <ul class="list-group">
+
+                                        @foreach($students as $student)
+                                            <li class="list-group-item">
+
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <strong>{{ $student->user->name }}</strong><br>
+                                                        <small>{{ $student->user->email }}</small>
+                                                    </div>
+
+                                                    {{-- 🔥 VIEW PDF --}}
+                                                    <a href="{{ route('student.profile.pdf', $student->id) }}" 
+                                                    target="_blank"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                        View Student Profile in PDF
+                                                    </a>
+                                                </div>
+
+                                                {{-- 🔥 STUDENT LOGS --}}
+                                                <div class="mt-3">
+                                                    <h6 class="text-muted">Logbook Entries</h6>
+                                                    <!-- <form method="GET" action="{{ route('student.profile.pdf', $student->id) }}" target="_blank">
+                                                        <input type="date" name="from">
+                                                        <input type="date" name="to">
+                                                        <button class="btn btn-sm btn-primary">Filter PDF</button>
+                                                    </form> -->
+
+                                                    @forelse($student->logbooks as $log)
+                                                        <div class="border rounded p-2 mb-2">
+
+                                                            <div class="d-flex justify-content-between">
+                                                                <div>
+                                                                    <strong>{{ $log->flight_date }}</strong> |
+                                                                    {{ $log->aircraft }} |
+                                                                    {{ $log->hours }} hrs
+                                                                </div>
+
+                                                                <div>
+                                                                    @if($log->approved)
+                                                                        <span class="badge bg-success">Approved</span>
+                                                                    @else
+                                                                        <span class="badge bg-warning">Pending</span>
+
+                                                                        {{-- ✅ APPROVE BUTTON --}}
+                                                                        <form method="POST"
+                                                                            action="{{ route('logbook.approve', $log->id) }}"
+                                                                            class="d-inline">
+                                                                            @csrf
+                                                                            <button class="btn btn-sm btn-success">
+                                                                                Approve
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    @empty
+                                                        <p class="text-muted">No logs yet.</p>
+                                                    @endforelse
+                                                </div>
+
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+                                @endif
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Flight School Invitations -->
+                <div class="col-md-6">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFlightSchool">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -157,110 +293,47 @@
                         </div>
                     </div>
 
-            </div>
-
-            <!-- Marketing -->
-            <div class="col-md-6">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingMarketing">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseMarketing" aria-expanded="false"
-                                aria-controls="collapseMarketing">
-                            Marketing
-                        </button>
-                    </h2>
-                    <div id="collapseMarketing" class="accordion-collapse collapse"
-                         aria-labelledby="headingMarketing" data-bs-parent="#accountAccordion">
-                        <div class="accordion-body">
-                            <p>If you do not wish to receive marketing emails, please click below. Saves your preference immediately.</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="marketingConsent" onclick="setMarketingConsent()">
-                                <label class="form-check-label" for="marketingConsent">
-                                    Unsubscribe from future marketing emails
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="row mt-3">
-            <!-- Cookie Consent -->
-            <div class="col-md-6">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingCookie">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseCookie" aria-expanded="false"
-                                aria-controls="collapseCookie">
-                            Cookie Consent
-                        </button>
-                    </h2>
-                    <div id="collapseCookie" class="accordion-collapse collapse"
-                         aria-labelledby="headingCookie" data-bs-parent="#accountAccordion">
-                        <div class="accordion-body">
-                            <p>Manage your cookie consent settings. We use cookies to personalize content and to analyze our traffic.
-                                We will never sell customer information to any third-party service. This consent is browser specific.
-                                Saves your preference immediately.</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cookieConsent" onclick="setCookieConsent()">
-                                <label class="form-check-label" for="cookieConsent">
-                                    Allow Third-Party Cookies
-                                </label>
+                <div class="col-md-6">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-toggle="collapse"
+                                data-bs-target="#pendingRequests">
+                                Pending Requests
+                            </button>
+                        </h2>
+
+                        <div id="pendingRequests" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+
+                                @foreach($requests as $req)
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>{{ $req->student->user->name }}</span>
+
+                                        <div>
+                                            <a href="{{ route('instructor.request.accept', $req->id) }}"
+                                                class="btn btn-success btn-sm">Accept</a>
+
+                                            <a href="{{ route('instructor.request.reject', $req->id) }}"
+                                                class="btn btn-danger btn-sm">Reject</a>
+                                        </div>
+                                    </div>
+                                @endforeach
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Transaction History -->
-            <div class="col-md-6">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTransaction">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTransaction" aria-expanded="false"
-                                aria-controls="collapseTransaction">
-                            Transaction History
-                        </button>
-                    </h2>
-                    <div id="collapseTransaction" class="accordion-collapse collapse"
-                         aria-labelledby="headingTransaction" data-bs-parent="#accountAccordion">
-                        <div class="accordion-body">
-                            <p>Below is your payment history. Click on any transaction below to download the receipt for that transaction.</p>
-                            <ul class="list-group" id="payment_history_list">
-                                <li class="list-group-item text-center">No Payment History</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </div> <!-- End of accordion -->
+        </div> <!-- End of accordion -->
 
-</div>
-
-<!-- Dialogs -->
-<dialog id="invite-modal" style="padding:30px;border:none;border-radius:25px">
-    <h3>Do you accept or reject this invitation?</h3>
-    <p id="invite-statement"></p>
-    <div class="d-flex justify-content-center gap-2">
-        <button class="btn btn-primary" id="accept-invite" onclick="acceptInvite()">Accept</button>
-        <button class="btn btn-danger" id="reject-invite" onclick="rejectInvite()">Reject</button>
     </div>
-</dialog>
 
-<dialog id="attach-modal" style="padding:30px;border:none;border-radius:25px">
-    <h3><span id="instructor_name"></span> has multiple organizations.</h3>
-    <h5>Select which to be attached to below</h5>
-    <h6 class="small">If you are not sure, please contact your instructor.</h6>
-    <table class="table" id="multiple_org_table">
-        <thead>
-            <tr><th>Organization</th><th></th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <button class="btn btn-secondary mt-3" id="closeAttachModal">Cancel</button>
-</dialog>
+    <script>
+        const notifications = @json(auth()->user()->unreadNotifications);
+    </script>
 
 @endsection

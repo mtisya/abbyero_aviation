@@ -1,169 +1,1303 @@
-#menu-logo {
-  width: 100px;
-  height: auto;
-}
 
-#menu-logo:hover {
-  filter: invert(1) hue-rotate(180deg);
-  border-radius: 50px !important;
-}
+/* =========================================================
+   ABBYERO AVIATION NAVBAR
+   ========================================================= */
 
 .navbar {
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 1rem !important;
-  z-index: 1000;
-}
-
-/*.navbar-transparent {*/
-/*    position:absolute;*/
-/*    top:00px;*/
-/*    z-index:1;*/
-/*    width:100%;*/
-/*    box-shadow: none;*/
-/*    background: transparent;*/
-/*    filter: drop-shadow(0px 0px 1px #000000);*/
-/*}*/
-
-#navbarScroll {
-  margin-top: 5px;
-}
-
-.navbar-brand {
-  margin-left: 1rem;
-  background-color: transparent !important;
-
-}
-
-.nav-item {
-  text-align: center;
-}
-
-.nav-item button {
-  font-size: 1rem;
-}
-
-.nav-link {
-  color: #2f3086 !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-  transition: none;
-}
-
-.nav-link:hover {
-  background-color: #27333e;
-  color: #ffffff !important;
-  border-radius: 50px !important;
-}
-
-.dropdown:hover {
-  transition: none !important;
+    min-height: 78px;
+    padding: 6px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
 
 .navbar-solid {
-  background-color: #58a1c4;
-  color: #000000 !important;
-  box-shadow: 0px 0px 10px #862121;
+    background-color: #58a1c4;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
+/* =========================================================
+   BOOTSTRAP MODALS - ABOVE NAVBAR
+========================================================= */
+
+.modal {
+    z-index: 1055 !important;
+}
+
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+/* Give large modals room below the sticky navbar */
+.modal-dialog {
+    margin-top: 90px;
+}
+
+/* Prevent tall forms from running underneath the navbar */
+.modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 110px);
+}
+
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+#menu-logo {
+    width: 65px;
+    height: 65px;
+    display: block;
+
+    object-fit: cover;
+    border-radius: 50%;
+
+    transition: transform 0.2s ease;
+}
+
+#menu-logo:hover {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   NAVBAR ACTIONS
+   Cart + Notifications + Authentication
+   ========================================================= */
+
+.navbar-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-left: auto;
+
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+
+/* Force dropdown to stay horizontally aligned */
+.navbar-actions > .dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+/* Cart and notification buttons */
+.navbar-actions .nav-icon-btn {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: transparent;
+    color: #000;
+
+    flex-shrink: 0;
+}
+
+
+/* Make the notification button horizontal */
+.navbar-actions .dropdown > .nav-icon-btn {
+    display: inline-flex !important;
+}
+
+
+/* Authentication buttons */
+.navbar-actions form {
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+}
+
+.navbar-actions .nav-auth-btn {
+    white-space: nowrap;
+    margin: 0;
+}
+
+/* =========================================================
+   MAIN NAVIGATION
+   ========================================================= */
+
+.navbar-collapse {
+    flex-grow: 1;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+
+    color: #000 !important;
+
+    font-size: 1rem;
+    font-weight: 500;
+
+    padding: 9px 10px !important;
+    margin: 2px;
+
+    white-space: nowrap;
+
+    border-radius: 25px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: #27333e;
+    color: #fff !important;
+}
+
+
+/* =========================================================
+   NOTIFICATION WRAPPER
+========================================================= */
+
+.notification-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+/* =========================================================
+   NOTIFICATION BUTTON
+========================================================= */
+
+.notification-btn {
+    position: relative;
+}
+
+
+/* =========================================================
+   NOTIFICATION DROPDOWN
+========================================================= */
+
+.notification-dropdown {
+    width: 400px;
+
+    max-width: calc(100vw - 30px);
+
+    padding: 0 !important;
+
+    margin-top: 10px !important;
+
+    overflow: hidden;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: #fff;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    background: #f8f9fa;
+
+    border-bottom: 1px solid #e9ecef;
+
+    font-size: 0.95rem;
+}
+
+
+.notification-count {
+    min-width: 22px;
+    height: 22px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 6px;
+
+    background: #dc3545;
+    color: #fff;
+
+    border-radius: 50px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NOTIFICATION LIST
+========================================================= */
+
+.notification-list {
+    max-height: 360px;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   NOTIFICATION ITEM
+========================================================= */
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    border-bottom: 1px solid #f0f0f0;
+
+    background: #fff;
+
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+
+/* Notification icon */
+
+.notification-icon {
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e8f4fb;
+    color: #2585ad;
+
+    border-radius: 50%;
+
+    font-size: 0.85rem;
+}
+
+
+/* Content */
+
+.notification-content {
+    min-width: 0;
+    flex: 1;
+}
+
+
+.notification-message {
+    color: #212529;
+
+    font-size: 0.88rem;
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+.notification-time {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #6c757d;
+
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.notification-empty {
+    padding: 30px 15px;
+
+    text-align: center;
+
+    color: #6c757d;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.notification-footer {
+    padding: 10px;
+
+    background: #fff;
+
+    border-top: 1px solid #eee;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .notification-dropdown {
+        width: 360px;
+
+        max-width: calc(100vw - 20px);
+
+        margin-top: 12px !important;
+    }
+
+    .notification-list {
+        max-height: 55vh;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .notification-dropdown {
+        position: fixed !important;
+
+        top: 68px !important;
+        left: 10px !important;
+        right: 10px !important;
+
+        width: auto !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        border-radius: 12px;
+    }
+
+
+    .notification-list {
+        max-height: 55vh;
+    }
+
+
+    .notification-header {
+        padding: 13px 14px;
+    }
+
+
+    .notification-item {
+        padding: 12px;
+    }
+
+
+    .notification-message {
+        font-size: 0.85rem;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .notification-dropdown {
+        top: 62px !important;
+
+        left: 7px !important;
+        right: 7px !important;
+
+        border-radius: 11px;
+    }
+
+
+    .notification-item {
+        gap: 8px;
+        padding: 10px;
+    }
+
+
+    .notification-icon {
+        width: 29px;
+        height: 29px;
+
+        flex-basis: 29px;
+    }
+
+
+    .notification-message {
+        font-size: 0.82rem;
+    }
+
+}
+
+/* =========================================================
+   NAVBAR TOGGLER
+   ========================================================= */
 
 .navbar-toggler {
-  background-color: #5540c7 !important;
-  border: none;
+    padding: 7px 9px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background-color: #5540c7;
 }
 
-.navbar-collapse.collapse.show {
-  background-color: #0d6efd; /* Bootstrap primary blue */
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
 
+@media (max-width: 400px) {
 
-#dropdownMenuButton {
-  height: 42px;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-  background: none;
-  text-align: center;
-  border-radius: 50px !important;
-  border: none;
+    #menu-logo {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .navbar-actions {
+        gap: 0;
+    }
+
+
+    .nav-icon-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+
+    /*
+     * Hide button text and use icons
+     * to prevent navbar overflow.
+     */
+
+    .auth-label {
+        display: none;
+    }
+
+
+    .nav-auth-btn {
+        width: 35px;
+        height: 35px;
+
+        padding: 0;
+
+        border-radius: 50%;
+    }
+
+
+    .nav-auth-btn i {
+        margin: 0 !important;
+    }
+
+
+    .navbar-toggler {
+        padding: 5px 7px;
+        margin-left: 2px;
+    }
+
+}
+/* =========================================================
+   INSTRUCTOR NAVBAR
+========================================================= */
+
+.instructor-navbar .navbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 8px;
 }
 
-#dropdownMenuButton:hover {
-  background-color: #27333e;
-  color: white;
+
+/* Instructor request message */
+
+.instructor-request-message {
+    margin-top: 8px;
+    padding: 8px 10px;
+
+    background-color: #f8f9fa;
+
+    border-left: 3px solid #58a1c4;
+    border-radius: 5px;
+
+    color: #495057;
+
+    font-size: 0.82rem;
+    line-height: 1.4;
 }
 
-@media (min-width: 1400px) {
-  #changeable_menu {
-    display: inline-flex;
-  }
 
-  #nav_login {
-    display: inline-flex;
-  }
+/* Accept / Reject */
 
-  #nav-btn-login {
-    position: absolute;
-    right: 2rem;
-    margin-top: 0 !important;
-   
-  }
+.notification-actions {
+    display: flex;
 
-  #nav-btn-logout {
-    position: absolute;
-    right: 1rem;
-    margin-top: 0 !important;
-  }
+    gap: 6px;
 
-  #nav-btn-register {
-    position: absolute;
-    right: 8rem;
-    margin-top: 0 !important;
-    
-  }
+    margin-top: 10px;
 }
 
-@media (max-width: 1399px) {
-  #navbarScroll {
-    background-color: #424242 !important;
-    margin-left: -1.4rem;
-    margin-right: -1.4rem;
-    box-shadow: inset 0 4px 4px #000000;
-  }
+.notification-actions form {
+    flex: 1;
+}
 
-  #changeable_menu {
-    display: block;
-  }
-
-  #nav_login {
-    display: block;
-  }
-
-  #dropdownMenuButton {
+.notification-actions .btn {
     width: 100%;
-    padding-top: 0;
-  }
+}
 
-  .navbar-nav {
-    padding-left: 15px;
-  }
 
-  .nav-item {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
+/* =========================================================
+   MOBILE
+========================================================= */
 
-  .nav-link {
-    color: white !important;
-    font-weight: bolder;
-  }
+@media (max-width: 991.98px) {
 
-  .dropdown-toggle {
-    color: white !important;
-    font-weight: bolder;
-    padding-left: 0;
-  }
+    .instructor-navbar .navbar-actions {
+        margin-left: auto;
+        margin-right: 3px;
 
-  #dropdownMenuButton {
-    color: white;
-  }
+        gap: 4px;
+    }
+
+    .instructor-navbar .notification-dropdown {
+        width: 360px;
+        max-width: calc(100vw - 20px);
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .instructor-navbar .notification-dropdown {
+        position: fixed !important;
+
+        top: 64px !important;
+
+        left: 10px !important;
+        right: 10px !important;
+
+        width: auto !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        border-radius: 12px;
+    }
+
+    .instructor-navbar .notification-actions {
+        gap: 5px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .instructor-navbar .navbar-actions {
+        gap: 0;
+    }
+
+    .instructor-navbar .auth-label {
+        display: none;
+    }
+
+    .instructor-navbar .nav-auth-btn {
+        width: 34px;
+        height: 34px;
+
+        padding: 0;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+    }
+
+    .instructor-navbar .notification-dropdown {
+        top: 60px !important;
+
+        left: 7px !important;
+        right: 7px !important;
+    }
+
+}
+/* =========================================================
+   STUDENT NAVBAR
+========================================================= */
+
+.student-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+   Cart + Notifications + Authentication
+========================================================= */
+
+.student-navbar .navbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+
+    gap: 8px;
+
+    margin-left: auto;
+
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+
+/* Cart + Notification buttons */
+
+.student-navbar .nav-icon-btn {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: transparent;
+    color: #000;
+
+    text-decoration: none;
+
+    flex-shrink: 0;
+}
+
+
+.student-navbar .nav-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #000;
+}
+
+
+/* =========================================================
+   NOTIFICATION WRAPPER
+========================================================= */
+
+.student-navbar .notification-wrapper {
+    position: relative;
+
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+/* =========================================================
+   NOTIFICATION BUTTON
+========================================================= */
+
+.student-navbar .notification-btn {
+    position: relative;
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+========================================================= */
+
+.student-navbar .nav-badge {
+    position: absolute;
+
+    top: -2px;
+    right: -3px;
+
+    min-width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    background-color: #dc3545;
+    color: #fff;
+
+    font-size: 0.65rem;
+    font-weight: 700;
+
+    border-radius: 50%;
+
+    border: 2px solid #58a1c4;
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
+.student-navbar .navbar-actions form {
+    display: flex;
+    align-items: center;
+
+    margin: 0 !important;
+}
+
+
+.student-navbar .nav-auth-btn {
+    white-space: nowrap;
+
+    padding: 7px 12px;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   NOTIFICATION DROPDOWN
+========================================================= */
+
+.student-navbar .notification-dropdown {
+    position: absolute;
+    z-index: 2000 !important;
+
+    width: 400px;
+    max-width: calc(100vw - 30px);
+
+    padding: 0 !important;
+
+    margin-top: 10px !important;
+
+    overflow: hidden;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: #fff;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.22);
+}
+
+
+/*
+ * Ensure Bootstrap dropdown is above
+ * the sticky navbar and page content.
+ */
+
+.student-navbar .dropdown-menu {
+    z-index: 2000 !important;
+}
+
+
+/* =========================================================
+   NOTIFICATION HEADER
+========================================================= */
+
+.student-navbar .notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    background: #f8f9fa;
+
+    border-bottom: 1px solid #e9ecef;
+
+    font-size: 0.95rem;
+}
+
+
+.student-navbar .notification-count {
+    min-width: 22px;
+    height: 22px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 6px;
+
+    background: #dc3545;
+    color: #fff;
+
+    border-radius: 50px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NOTIFICATION LIST
+========================================================= */
+
+.student-navbar .notification-list {
+    max-height: 360px;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   NOTIFICATION ITEM
+========================================================= */
+
+.student-navbar .notification-item {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    background: #fff;
+
+    border-bottom: 1px solid #f0f0f0;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.student-navbar .notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+
+/* =========================================================
+   NOTIFICATION ICON
+========================================================= */
+
+.student-navbar .notification-icon {
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e8f4fb;
+    color: #2585ad;
+
+    border-radius: 50%;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   NOTIFICATION CONTENT
+========================================================= */
+
+.student-navbar .notification-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.student-navbar .notification-message {
+    color: #212529;
+
+    font-size: 0.88rem;
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+.student-navbar .notification-time {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #6c757d;
+
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.student-navbar .notification-empty {
+    padding: 30px 15px;
+
+    text-align: center;
+
+    color: #6c757d;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   NOTIFICATION FOOTER
+========================================================= */
+
+.student-navbar .notification-footer {
+    padding: 10px;
+
+    background: #fff;
+
+    border-top: 1px solid #eee;
+}
+
+
+/* =========================================================
+   MOBILE / TABLET
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .student-navbar .navbar-actions {
+        margin-left: auto;
+        margin-right: 3px;
+
+        gap: 4px;
+    }
+
+
+    .student-navbar .nav-icon-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+
+    .student-navbar .nav-auth-btn {
+        padding: 6px 9px;
+    }
+
+
+    .student-navbar .notification-dropdown {
+        width: 360px;
+
+        max-width: calc(100vw - 20px);
+
+        margin-top: 8px !important;
+    }
+
+
+    .student-navbar .notification-list {
+        max-height: 55vh;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    /*
+     * Make notification panel fit the entire phone.
+     * It remains above the page content.
+     */
+
+    .student-navbar .notification-dropdown {
+        position: fixed !important;
+
+        top: 130px !important;
+
+        left: 10px !important;
+        right: 10px !important;
+
+        width: auto !important;
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        border-radius: 12px;
+
+        z-index: 3000 !important;
+    }
+
+
+    .student-navbar .notification-list {
+        max-height: 55vh;
+    }
+
+
+    .student-navbar .notification-header {
+        padding: 13px 14px;
+    }
+
+
+    .student-navbar .notification-item {
+        padding: 12px;
+    }
+
+
+    .student-navbar .notification-message {
+        font-size: 0.85rem;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .student-navbar .navbar-actions {
+        gap: 0;
+    }
+
+
+    .student-navbar .nav-icon-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+
+    /*
+     * Hide authentication text
+     * and display icon only.
+     */
+
+    .student-navbar .auth-label {
+        display: none;
+    }
+
+
+    .student-navbar .nav-auth-btn {
+        width: 35px;
+        height: 35px;
+
+        padding: 0;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+    }
+
+
+    .student-navbar .nav-auth-btn i {
+        margin: 0 !important;
+    }
+
+
+    .student-navbar .notification-dropdown {
+        top: 60px !important;
+
+        left: 7px !important;
+        right: 7px !important;
+
+        border-radius: 11px;
+    }
+
+
+    .student-navbar .notification-item {
+        gap: 8px;
+
+        padding: 10px;
+    }
+
+
+    .student-navbar .notification-icon {
+        width: 29px;
+        height: 29px;
+
+        flex-basis: 29px;
+    }
+
+
+    .student-navbar .notification-message {
+        font-size: 0.82rem;
+    }
+
+}
+/* =========================================================
+   NOTIFICATION TOAST CONTAINER
+   ========================================================= */
+
+#toast-container {
+    position: fixed;
+
+    /* Keep notifications below the sticky navbar */
+    top: 130px;
+    right: 20px;
+
+    width: 350px;
+    max-width: calc(100vw - 30px);
+
+    z-index: 2000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    pointer-events: none;
+}
+
+
+/* Individual toast */
+
+#toast-container .toast {
+    width: 100%;
+    min-width: 0 !important;
+
+    margin-bottom: 10px;
+
+    border: 0;
+    border-radius: 12px;
+
+    pointer-events: auto;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+
+    opacity: 1;
+
+    transition:
+        opacity 0.5s ease,
+        transform 0.3s ease;
+}
+
+
+/* Toast body */
+
+#toast-container .toast-body {
+    padding: 12px 14px;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* Close button */
+
+#toast-container .btn-close {
+    flex-shrink: 0;
+
+    opacity: 0.85;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+    #toast-container {
+        top: 150px;
+        right: 15px;
+
+        width: 330px;
+        max-width: calc(100vw - 30px);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+    #toast-container {
+        top: 150px;
+
+        left: 10px;
+        right: 10px;
+
+        width: auto;
+        max-width: none;
+    }
+
+    #toast-container .toast {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    #toast-container {
+        top: 75px;
+
+        left: 8px;
+        right: 8px;
+    }
+
+    #toast-container .toast-body {
+        padding: 10px 12px;
+        font-size: 0.84rem;
+    }
+
 }

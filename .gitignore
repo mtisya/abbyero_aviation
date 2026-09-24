@@ -17,3 +17,21 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Local CI/CD SSH keys
+/rsa_keys/
+
+# Deployment/generated files
+/public_html/
+
+# Local archives/backups
+*.zip
+*.lnk

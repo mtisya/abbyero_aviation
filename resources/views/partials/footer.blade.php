@@ -20,21 +20,21 @@
         </div>
 
         <div class="mt-3" id='footer_social'>
-            <a href='https://www.facebook.com/abbyerofacebook' target='_blank' rel='noopener noreferrer'>
+            <a href='https://www.facebook.com/profile.php?id=61593295282943' target='_blank' rel='noopener noreferrer'>
                 <img alt='Facebook' 
                      src="{{ asset('assets/images/index/fb-icon.webp') }}" 
                      height='45' width='45' 
                      onerror="this.onerror=null;this.src='{{ asset('assets/images/index/fb-icon.png') }}'">
             </a>
 
-            <a href='https://www.instagram.com/abbyerosealinstagram' target='_blank' rel='noopener noreferrer'>
+            <a href='https://www.instagram.com/abbyeroaviation' target='_blank' rel='noopener noreferrer'>
                 <img alt='Instagram' 
                      src="{{ asset('assets/images/index/ig-icon.webp') }}" 
                      height='45' width='45' 
                      onerror="this.onerror=null;this.src='{{ asset('assets/images/index/ig-icon.png') }}'">
             </a>
 
-            <a href='https://www.youtube.com/c/abbyeroyoutube' target='_blank' rel='noopener noreferrer'>
+            <a href='https://www.youtube.com/@AbbyeroAviationLLC' target='_blank' rel='noopener noreferrer'>
                 <img alt='YouTube' 
                      src="{{ asset('assets/images/index/yt-icon.webp') }}" 
                      height='45' width='45' 

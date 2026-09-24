@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle($request, Closure $next, $roles)
+    public function handle($request, Closure $next, ...$roles)
     {
-        $roles = explode('|', $roles); // allow multiple roles like user|instructor
-
         if (!auth()->check() || !in_array(auth()->user()->role, $roles)) {
             abort(403, 'Unauthorized access.');
         }

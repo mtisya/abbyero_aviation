@@ -64,7 +64,7 @@
     </style>
 
 
-    <title>Abbyero Aviation School</title>
+    <title>Instructor | Abbyero Aviation LLC</title>
     <script type="text/javascript">
     var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
     (function () {
@@ -83,7 +83,11 @@
 <body>
 
     @include('partials.navbarinstructor')
-
+    <div id="toast-container" 
+        class="position-fixed top-0 end-0 p-3" 
+        style="z-index: 9999;">
+    </div>
+    
     <main>
         @yield('content')
     </main>
@@ -111,5 +115,6 @@
         })
     });
     </script>
+    
     @stack('scripts')
 </body>

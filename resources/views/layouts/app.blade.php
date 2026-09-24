@@ -40,6 +40,8 @@
     <link href='assets/css/index.min.css' rel='stylesheet' type='text/css'>
     <!-- <link href='assets/css/index.css' rel='stylesheet' type='text/css'> -->
     <link rel="stylesheet" href="assets/css/style_home.css" type='text/css'>
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -59,7 +61,7 @@
     <link href='assets/images/fav-icons/favicon-16x16.png' rel='icon' sizes='16x16' type='image/png'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <title>Abiero Aviation School</title>
+    <title>Abbyero Aviation LLC</title>
 
     <script src='//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js' async type='text/javascript'></script>
     

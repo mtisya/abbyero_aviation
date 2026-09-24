@@ -1,142 +1,462 @@
+
+/* =========================================================
+   ABBYERO AVIATION NAVBAR
+   ========================================================= */
+
+.navbar {
+    min-height: 78px;
+    padding: 6px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+.navbar-solid {
+    background-color: #58a1c4;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
 #menu-logo {
-    width: 100px;
-    height: auto
+    width: 65px;
+    height: 65px;
+    display: block;
+
+    object-fit: cover;
+    border-radius: 50%;
+
+    transition: transform 0.2s ease;
 }
 
 #menu-logo:hover {
-    filter: invert(1) hue-rotate(180deg);
-    border-radius: 50px !important
+    transform: scale(1.04);
 }
 
-.navbar {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 1rem !important;
-    z-index: 1000
+
+/* =========================================================
+   NAVBAR ACTIONS
+   Cart + Notifications + Authentication
+   ========================================================= */
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 7px;
+    margin-left: auto;
+
+    flex-shrink: 0;
 }
 
-#navbarScroll {
-    margin-top: 5px
+
+/* =========================================================
+   CART + NOTIFICATION BUTTON
+   ========================================================= */
+
+.nav-icon-btn {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: transparent;
+    color: #000;
+
+    text-decoration: none;
+
+    cursor: pointer;
+    flex-shrink: 0;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.navbar-brand {
-    margin-left: 1rem
+.nav-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #000;
 }
 
-.nav-item {
-    text-align: center
+.nav-icon-btn:active {
+    transform: scale(0.95);
 }
 
-.nav-item button {
-    font-size: 1rem
+
+/* =========================================================
+   CART / NOTIFICATION BADGE
+   ========================================================= */
+
+.nav-badge {
+    position: absolute;
+
+    top: -2px;
+    right: -3px;
+
+    min-width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    background-color: #dc3545;
+    color: #fff;
+
+    border: 2px solid #58a1c4;
+    border-radius: 50%;
+
+    font-size: 0.65rem;
+    line-height: 1;
+    font-weight: 700;
+
+    z-index: 2;
 }
 
-#dropdownMenuButton,
+
+/* =========================================================
+   AUTH BUTTONS
+   ========================================================= */
+
+.nav-auth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    padding: 7px 12px;
+
+    white-space: nowrap;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    border-radius: 6px;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+   ========================================================= */
+
+.navbar-collapse {
+    flex-grow: 1;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
 .nav-link {
-    padding-left: 20px !important;
-    padding-right: 20px !important
-}
+    display: flex;
+    align-items: center;
 
-.nav-link {
     color: #000 !important;
-    transition: none
+
+    font-size: 0.92rem;
+    font-weight: 500;
+
+    padding: 9px 10px !important;
+    margin: 2px;
+
+    white-space: nowrap;
+
+    border-radius: 25px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .nav-link:hover {
     background-color: #27333e;
     color: #fff !important;
-    border-radius: 50px !important
 }
 
-.dropdown:hover {
-    transition: none !important
+
+/* =========================================================
+   NOTIFICATION DROPDOWN
+   ========================================================= */
+
+.notification-dropdown {
+    width: 420px;
+    max-width: calc(100vw - 20px);
+
+    max-height: 70vh;
+    overflow-y: auto;
+
+    padding: 8px !important;
+
+    border: 0;
+    border-radius: 12px;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-.navbar-solid {
-    background-color: #58a1c4;
-    color: #000 !important;
-    box-shadow: 0 0 10px #000
+.notification-dropdown .dropdown-header {
+    font-weight: 600;
 }
+
+.notification-item {
+    padding: 10px;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+
+    border-bottom: 1px solid #eee;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   NAVBAR TOGGLER
+   ========================================================= */
 
 .navbar-toggler {
-    background-color: #5540c7 !important;
-    border: 0
+    padding: 7px 9px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background-color: #5540c7;
 }
 
-.navbar-collapse.collapse.show li {
-    color: #fff !important
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
-#dropdownMenuButton {
-    height: 42px;
-    background: 0 0;
-    text-align: center;
-    border-radius: 50px !important;
-    border: 0
-}
 
-#dropdownMenuButton:hover {
-    background-color: #27333e;
-    color: #fff
-}
+/* =========================================================
+   TABLET / MOBILE
+   <= 991px
+   ========================================================= */
 
-@media (min-width:1400px) {
+@media (max-width: 991.98px) {
 
-    #changeable_menu,
-    #nav_login {
-        display: inline-flex
+    .navbar {
+        min-height: 68px;
+        padding: 6px 0;
     }
 
-    #nav-btn-login,
-    #nav-btn-logout,
-    #nav-btn-register {
-        position: absolute;
-        right: 1rem;
-        margin-top: 0 !important
+
+    /* Logo */
+
+    #menu-logo {
+        width: 55px;
+        height: 55px;
     }
 
-    #nav-btn-register {
-        right: 8rem
-    }
-}
 
-@media (max-width:1399px) {
-    #navbarScroll {
-        background-color: #424242 !important;
-        margin-left: -1.4rem;
-        margin-right: -1.4rem;
-        box-shadow: inset 0 4px 4px #000
-    }
+    /*
+     * Keep:
+     * Logo | Cart | Notification | Auth | Menu
+     * on the same top row.
+     */
 
-    #changeable_menu,
-    #nav_login {
-        display: block
+    .navbar-actions {
+        margin-left: auto;
+        gap: 3px;
     }
 
-    #dropdownMenuButton {
+
+    /* Main menu opens underneath */
+
+    .navbar-collapse {
         width: 100%;
-        padding-top: 0;
-        color: #fff
+
+        margin-top: 10px;
+        padding: 8px;
+
+        background-color: #424242;
+
+        border-radius: 0 0 12px 12px;
+
+        box-shadow:
+            inset 0 4px 4px rgba(0, 0, 0, 0.25);
     }
+
+
+    /* Navigation links */
 
     .navbar-nav {
-        padding-left: 15px
+        width: 100%;
+
+        align-items: stretch !important;
     }
 
-    .nav-item {
-        padding-top: 10px;
-        padding-bottom: 10px
+    .navbar-nav .nav-item {
+        width: 100%;
     }
 
-    .dropdown-toggle,
-    .nav-link {
+    .navbar-nav .nav-link {
+        width: 100%;
+
+        padding: 11px 14px !important;
+
+        margin: 1px 0;
+
         color: #fff !important;
-        font-weight: bolder
+
+        text-align: left;
+
+        border-radius: 7px;
     }
 
-    .dropdown-toggle {
-        padding-left: 0
+    .navbar-nav .nav-link:hover {
+        background-color: #27333e;
+        color: #fff !important;
     }
+
+
+    /* Notification dropdown */
+
+    .notification-dropdown {
+        width: min(420px, calc(100vw - 20px));
+        max-width: calc(100vw - 20px);
+    }
+
 }
 
-/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIlVzZXJzL2hlbnJ5Z3JvdW5kc2Nob29sLmNvbS9yZXBvc2l0b3JpZXMvUHJvamVjdC1Bcm1zdHJvbmcvczMvZnJvbnRlbmRzL3dlYi9hc3NldHMvY3NzL25hdmJhci52Mi5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsVSxDQUNFLFcsQ0FDQSxXLENBR0YsZ0IsQ0FDRSxtQyxDQUNBLDRCLENBR0YsTyxDQUNFLGlCLENBQ0Esa0IsQ0FDQSx3QixDQUNBLFksQ0FhRixhLENBQ0UsYyxDQUdGLGEsQ0FDRSxnQixDQUdGLFMsQ0FDRSxpQixDQUdGLGdCLENBQ0UsYyxDQW1DRixtQixDQWhDQSxTLENBa0NFLDJCLENBQ0EsNEIsQ0FuQ0YsUyxDQUNFLG9CLENBR0EsZSxDQUdGLGUsQ0FDRSx3QixDQUNBLG9CLENBQ0EsNEIsQ0FHRixlLENBQ0UseUIsQ0FHRixhLENBQ0Usd0IsQ0FDQSxvQixDQUNBLHdCLENBR0YsZSxDQUNFLGtDLENBQ0EsUSxDQUdGLGlDLENBQ0Usb0IsQ0FHRixtQixDQUNFLFcsQ0FHQSxjLENBQ0EsaUIsQ0FDQSw0QixDQUNBLFEsQ0FHRix5QixDQUNFLHdCLENBQ0EsVSxDQUdGLDBCQUNFLGdCLENBSUEsVSxDQUhFLG1CLENBT0YsYyxDQU1BLGUsQ0FNQSxpQixDQVhFLGlCLENBQ0EsVSxDQUNBLHNCLENBU0YsaUIsQ0FFRSxZQUtKLEEsMEJBQ0UsYSxDQUNFLGtDLENBQ0EsbUIsQ0FDQSxvQixDQUNBLCtCLENBR0YsZ0IsQ0FJQSxVLENBSEUsYSxDQU9GLG1CLENBQ0UsVSxDQUNBLGEsQ0F3QkEsVSxDQXJCRixXLENBQ0UsaUIsQ0FHRixTLENBQ0UsZ0IsQ0FDQSxtQixDQVFGLGdCLENBTEEsUyxDQUNFLG9CLENBQ0Esa0IsQ0FHRixnQixDQUdFLGdCIiwiZmlsZSI6IlVzZXJzL2hlbnJ5Z3JvdW5kc2Nob29sLmNvbS9yZXBvc2l0b3JpZXMvUHJvamVjdC1Bcm1zdHJvbmcvczMvZnJvbnRlbmRzL3dlYi9hc3NldHMvY3NzL25hdmJhci52Mi5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIjbWVudS1sb2dvIHtcbiAgd2lkdGg6IDEwMHB4O1xuICBoZWlnaHQ6IGF1dG87XG59XG5cbiNtZW51LWxvZ286aG92ZXIge1xuICBmaWx0ZXI6IGludmVydCgxKSBodWUtcm90YXRlKDE4MGRlZyk7XG4gIGJvcmRlci1yYWRpdXM6IDUwcHggIWltcG9ydGFudDtcbn1cblxuLm5hdmJhciB7XG4gIHBhZGRpbmctbGVmdDogMTBweDtcbiAgcGFkZGluZy1yaWdodDogMTBweDtcbiAgZm9udC1zaXplOiAxcmVtICFpbXBvcnRhbnQ7XG4gIHotaW5kZXg6IDEwMDA7XG59XG5cbi8qLm5hdmJhci10cmFuc3BhcmVudCB7Ki9cbi8qICAgIHBvc2l0aW9uOmFic29sdXRlOyovXG4vKiAgICB0b3A6MDBweDsqL1xuLyogICAgei1pbmRleDoxOyovXG4vKiAgICB3aWR0aDoxMDAlOyovXG4vKiAgICBib3gtc2hhZG93OiBub25lOyovXG4vKiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDsqL1xuLyogICAgZmlsdGVyOiBkcm9wLXNoYWRvdygwcHggMHB4IDFweCAjMDAwMDAwKTsqL1xuLyp9Ki9cblxuI25hdmJhclNjcm9sbCB7XG4gIG1hcmdpbi10b3A6IDVweDtcbn1cblxuLm5hdmJhci1icmFuZCB7XG4gIG1hcmdpbi1sZWZ0OiAxcmVtO1xufVxuXG4ubmF2LWl0ZW0ge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG5cbi5uYXYtaXRlbSBidXR0b24ge1xuICBmb250LXNpemU6IDFyZW07XG59XG5cbi5uYXYtbGluayB7XG4gIGNvbG9yOiAjMDAwMDAwICFpbXBvcnRhbnQ7XG4gIHBhZGRpbmctbGVmdDogMjBweCAhaW1wb3J0YW50O1xuICBwYWRkaW5nLXJpZ2h0OiAyMHB4ICFpbXBvcnRhbnQ7XG4gIHRyYW5zaXRpb246IG5vbmU7XG59XG5cbi5uYXYtbGluazpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMyNzMzM2U7XG4gIGNvbG9yOiAjZmZmZmZmICFpbXBvcnRhbnQ7XG4gIGJvcmRlci1yYWRpdXM6IDUwcHggIWltcG9ydGFudDtcbn1cblxuLmRyb3Bkb3duOmhvdmVyIHtcbiAgdHJhbnNpdGlvbjogbm9uZSAhaW1wb3J0YW50O1xufVxuXG4ubmF2YmFyLXNvbGlkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZGEyNjtcbiAgY29sb3I6ICMwMDAwMDAgIWltcG9ydGFudDtcbiAgYm94LXNoYWRvdzogMHB4IDBweCAxMHB4ICMwMDAwMDA7XG59XG5cbi5uYXZiYXItdG9nZ2xlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmRhMjYgIWltcG9ydGFudDtcbiAgYm9yZGVyOiBub25lO1xufVxuXG4ubmF2YmFyLWNvbGxhcHNlLmNvbGxhcHNlLnNob3cgbGkge1xuICBjb2xvcjogd2hpdGUgIWltcG9ydGFudDtcbn1cblxuI2Ryb3Bkb3duTWVudUJ1dHRvbiB7XG4gIGhlaWdodDogNDJweDtcbiAgcGFkZGluZy1sZWZ0OiAyMHB4ICFpbXBvcnRhbnQ7XG4gIHBhZGRpbmctcmlnaHQ6IDIwcHggIWltcG9ydGFudDtcbiAgYmFja2dyb3VuZDogbm9uZTtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xuICBib3JkZXItcmFkaXVzOiA1MHB4ICFpbXBvcnRhbnQ7XG4gIGJvcmRlcjogbm9uZTtcbn1cblxuI2Ryb3Bkb3duTWVudUJ1dHRvbjpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMyNzMzM2U7XG4gIGNvbG9yOiB3aGl0ZTtcbn1cblxuQG1lZGlhIChtaW4td2lkdGg6IDE0MDBweCkge1xuICAjY2hhbmdlYWJsZV9tZW51IHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgfVxuXG4gICNuYXZfbG9naW4ge1xuICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICB9XG5cbiAgI25hdi1idG4tbG9naW4ge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXJlbTtcbiAgICBtYXJnaW4tdG9wOiAwICFpbXBvcnRhbnQ7XG4gIH1cblxuICAjbmF2LWJ0bi1sb2dvdXQge1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXJlbTtcbiAgICBtYXJnaW4tdG9wOiAwICFpbXBvcnRhbnQ7XG4gIH1cblxuICAjbmF2LWJ0bi1yZWdpc3RlciB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHJpZ2h0OiA4cmVtO1xuICAgIG1hcmdpbi10b3A6IDAgIWltcG9ydGFudDtcbiAgfVxufVxuXG5AbWVkaWEgKG1heC13aWR0aDogMTM5OXB4KSB7XG4gICNuYXZiYXJTY3JvbGwge1xuICAgIGJhY2tncm91bmQtY29sb3I6ICM0MjQyNDIgIWltcG9ydGFudDtcbiAgICBtYXJnaW4tbGVmdDogLTEuNHJlbTtcbiAgICBtYXJnaW4tcmlnaHQ6IC0xLjRyZW07XG4gICAgYm94LXNoYWRvdzogaW5zZXQgMCA0cHggNHB4ICMwMDAwMDA7XG4gIH1cblxuICAjY2hhbmdlYWJsZV9tZW51IHtcbiAgICBkaXNwbGF5OiBibG9jaztcbiAgfVxuXG4gICNuYXZfbG9naW4ge1xuICAgIGRpc3BsYXk6IGJsb2NrO1xuICB9XG5cbiAgI2Ryb3Bkb3duTWVudUJ1dHRvbiB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgcGFkZGluZy10b3A6IDA7XG4gIH1cblxuICAubmF2YmFyLW5hdiB7XG4gICAgcGFkZGluZy1sZWZ0OiAxNXB4O1xuICB9XG5cbiAgLm5hdi1pdGVtIHtcbiAgICBwYWRkaW5nLXRvcDogMTBweDtcbiAgICBwYWRkaW5nLWJvdHRvbTogMTBweDtcbiAgfVxuXG4gIC5uYXYtbGluayB7XG4gICAgY29sb3I6IHdoaXRlICFpbXBvcnRhbnQ7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGRlcjtcbiAgfVxuXG4gIC5kcm9wZG93bi10b2dnbGUge1xuICAgIGNvbG9yOiB3aGl0ZSAhaW1wb3J0YW50O1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkZXI7XG4gICAgcGFkZGluZy1sZWZ0OiAwO1xuICB9XG5cbiAgI2Ryb3Bkb3duTWVudUJ1dHRvbiB7XG4gICAgY29sb3I6IHdoaXRlO1xuICB9XG59XG4iXX0= */
+
+/* =========================================================
+   SMALL PHONES
+   <= 575px
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .navbar {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+
+    /* Smaller logo */
+
+    #menu-logo {
+        width: 50px;
+        height: 50px;
+    }
+
+
+    /* Actions remain horizontal */
+
+    .navbar-actions {
+        gap: 1px;
+    }
+
+
+    /* Icons */
+
+    .nav-icon-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .nav-icon-btn i {
+        font-size: 1rem !important;
+    }
+
+
+    /* Auth buttons */
+
+    .nav-auth-btn {
+        padding: 6px 8px;
+
+        font-size: 0.8rem;
+    }
+
+
+    /* Badge */
+
+    .nav-badge {
+        min-width: 17px;
+        height: 17px;
+
+        font-size: 0.6rem;
+    }
+
+
+    /* Dropdown */
+
+    .notification-dropdown {
+        width: calc(100vw - 16px);
+        max-width: calc(100vw - 16px);
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   <= 400px
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    #menu-logo {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .navbar-actions {
+        gap: 0;
+    }
+
+
+    .nav-icon-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+
+    /*
+     * Hide button text and use icons
+     * to prevent navbar overflow.
+     */
+
+    .auth-label {
+        display: none;
+    }
+
+
+    .nav-auth-btn {
+        width: 35px;
+        height: 35px;
+
+        padding: 0;
+
+        border-radius: 50%;
+    }
+
+
+    .nav-auth-btn i {
+        margin: 0 !important;
+    }
+
+
+    .navbar-toggler {
+        padding: 5px 7px;
+        margin-left: 2px;
+    }
+
+}

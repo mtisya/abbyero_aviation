@@ -76,11 +76,13 @@
                             </p>
                             <a href="{{ route('instructors.show', $instructor) }}" class="btn btn-info btn-sm">View</a>
                             @auth
-                                @if(Auth::user()->role === 'admin')
+                                @if(in_array(Auth::user()->role, ['admin', 'instructor']))
                                     <a href="{{ route('instructors.edit', $instructor) }}" class="btn btn-warning btn-sm">Edit</a>
+
                                     <form action="{{ route('instructors.destroy', $instructor) }}" method="POST" class="d-inline"
                                         onsubmit="return confirm('Are you sure you want to delete this instructor?')">
-                                        @csrf @method('DELETE')
+                                        @csrf 
+                                        @method('DELETE')
                                         <button class="btn btn-danger btn-sm">Delete</button>
                                     </form>
                                 @endif

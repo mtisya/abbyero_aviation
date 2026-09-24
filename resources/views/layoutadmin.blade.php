@@ -53,7 +53,10 @@
     <link href="{{ asset('common/sweetalert2/11.4.8/sweetalert2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/datatables/media/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/datatables/media/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/datatables/extensions/Responsive/css/responsive.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <style>
     .accordion-header-btn.collapsed .accordion-toggle-icon {
         transform: rotate(0deg);
@@ -66,7 +69,7 @@
     </style>
 
 
-    <title>Abbyero Aviation School</title>
+    <title>Admin | Abbyero Aviation LLC</title>
     <script type="text/javascript">
     var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
     (function () {
@@ -99,6 +102,11 @@
 
     @include('partials.navbaradmin')
 
+    <div id="toast-container" 
+        class="position-fixed top-0 end-0 p-3" 
+        style="z-index: 9999;">
+    </div>
+
     <main>
         @yield('content')
     </main>
@@ -130,6 +138,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+});
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
 });
 </script>
 

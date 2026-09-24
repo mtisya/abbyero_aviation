@@ -1,58 +1,288 @@
 <body>
-    <nav class="navbar navbar-expand-xxl sticky-top navbar-solid">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="assets/images/logos/abbyerologo.png" alt="Abbyero Aviation Logo" height="55" width="60"
+    @php
+        $cartCount = collect(session('cart', []))->sum('quantity');
+    @endphp
+
+    <nav class="navbar navbar-expand-lg sticky-top navbar-solid">
+        <div class="container-fluid px-3">
+
+            {{-- =====================================================
+            LOGO
+            ====================================================== --}}
+            <a class="navbar-brand d-flex align-items-center me-3" href="{{ url('/') }}"
+                aria-label="Abbyero Aviation Home">
+
+                <img src="{{ asset('assets/images/logos/abbyerologo.png') }}" alt="Abbyero Aviation Logo"
                     id="menu-logo">
             </a>
 
+            {{-- =====================================================
+            TOP ACTIONS
+            Cart + Notifications + Authentication
+            Remain horizontally aligned
+            ====================================================== --}}
+            <div class="navbar-actions order-lg-3">
+
+                {{-- Cart --}}
+                <a href="{{ route('cart.index') }}" class="nav-icon-btn" aria-label="Shopping cart"
+                    title="Shopping Cart">
+
+                    <i class="bi bi-cart-fill fs-5"></i>
+
+                    @if($cartCount > 0)
+                        <span class="nav-badge">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+
+                </a>
+
+
+                {{-- Notifications --}}
+                @auth
+                    <div class="dropdown notification-wrapper">
+
+                        <button class="nav-icon-btn notification-btn" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" aria-label="Notifications" title="Notifications">
+
+                            <i class="bi bi-bell-fill fs-5"></i>
+
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <span class="nav-badge">
+                                    {{ auth()->user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
+
+                        </button>
+
+
+                        {{-- Notification Dropdown --}}
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown">
+
+                            <div class="notification-header">
+                                <strong>
+                                    <i class="bi bi-bell me-1"></i>
+                                    Notifications
+                                </strong>
+
+                                @if(auth()->user()->unreadNotifications->count() > 0)
+                                    <span class="notification-count">
+                                        {{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
+                                @endif
+                            </div>
+
+
+                            <div class="notification-list">
+
+                                @forelse(auth()->user()->unreadNotifications as $notification)
+
+                                    <div class="notification-item">
+
+                                        <div class="notification-icon">
+                                            <i class="bi bi-bell-fill"></i>
+                                        </div>
+
+                                        <div class="notification-content">
+
+                                            <div class="notification-message">
+                                                {{ $notification->data['message'] ?? 'New notification' }}
+                                            </div>
+
+                                            @if(isset($notification->created_at))
+                                                <small class="notification-time">
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </small>
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+                                @empty
+
+                                    <div class="notification-empty">
+                                        <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
+                                        No new notifications
+                                    </div>
+
+                                @endforelse
+
+                            </div>
+
+
+                            {{-- Notification Footer --}}
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+
+                                <div class="notification-footer">
+
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="markAsRead()">
+
+                                        <i class="bi bi-check2-all me-1"></i>
+                                        Mark all as read
+
+                                    </button>
+
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+                @endauth
+
+
+                {{-- Authentication --}}
+                @auth
+
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+
+                        @csrf
+
+                        <button type="submit" class="btn btn-danger nav-auth-btn" id="nav-btn-logout">
+
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            <span class="auth-label">Logout</span>
+
+                        </button>
+
+                    </form>
+
+                @else
+
+                    <a href="{{ route('register') }}" class="btn btn-primary nav-auth-btn" id="nav-btn-register">
+
+                        <i class="bi bi-person-plus me-1"></i>
+                        <span class="auth-label">Start your Ride</span>
+
+                    </a>
+
+                    <a href="{{ route('login') }}" class="btn btn-secondary nav-auth-btn" id="nav-btn-login">
+
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+                        <span class="auth-label">Sign In</span>
+
+                    </a>
+
+                @endauth
+
+            </div>
+
+            {{-- =====================================================
+            MOBILE TOGGLE
+            ====================================================== --}}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                 aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarScroll">
-                <ul class="navbar-nav me-auto">
+
+            {{-- =====================================================
+            NAVIGATION MENU
+            ====================================================== --}}
+            <div class="collapse navbar-collapse order-lg-2" id="navbarScroll">
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                     @auth
                         <li class="nav-item">
+
                             @php
                                 $role = Auth::user()->role;
+
                                 $dashboardRoute = match ($role) {
                                     'admin' => '/admin/dashboard',
                                     'instructor' => '/instructor/dashboard',
+                                    'student' => '/student/dashboard',
                                     'user' => '/dashboard',
                                     default => '#',
                                 };
                             @endphp
-                            <a class="nav-link" href="{{ $dashboardRoute }}">My Account</a>
+
+                            <a class="nav-link" href="{{ $dashboardRoute }}">
+
+                                <i class="bi bi-person-circle me-1"></i>
+                                My Account
+
+                            </a>
+
                         </li>
                     @endauth
-                    <li class="nav-item"><a class="nav-link" href="/flightrental">Flight Rental</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/maintenance">Aircraft Maintenance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/aerobics">Aerobics</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/aircraftparts">Aircraft Parts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/instructors">Flight Instructors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/skydiving">Sky Diving</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/gliders">Gliders</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/flightrental">
+                            <i class="bi bi-airplane me-1"></i>
+                            Aircraft
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/maintenance">
+                            <i class="bi bi-tools me-1"></i>
+                            Aircraft Maintenance
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/flight-school">
+                            <i class="bi bi-mortarboard me-1"></i>
+                            Flight School
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/aircraftparts">
+                            <i class="bi bi-gear me-1"></i>
+                            Aircraft Parts
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/instructors">
+                            <i class="bi bi-person-workspace me-1"></i>
+                            Flight Instructors
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skydiving">
+                            <i class="bi bi-person-fill-down me-1"></i>
+                            Sky Diving
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gliders">
+                            <i class="bi bi-wind me-1"></i>
+                            Gliders
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">
+                            <i class="bi bi-envelope me-1"></i>
+                            Contact Us
+                        </a>
+                    </li>
+
                 </ul>
 
-                <div class="d-flex">
-                    @auth
-                        <form action="{{ route('logout') }}" method="POST" class="me-2">
-                            @csrf
-                            <button type="submit" class="btn btn-danger" id="nav-btn-logout">Logout</button>
-                        </form>
-                    @else
-                        <button class="btn btn-primary me-2" id="nav-btn-register"
-                            onclick="window.location.href='{{ route('register') }}'">Start your Ride</button>
-                        <button class="btn btn-secondary" id="nav-btn-login"
-                            onclick="window.location.href='{{ route('login') }}'">Sign In</button>
-                    @endauth
-                </div>
             </div>
+
         </div>
+
     </nav>
+
 
     <main>
         <div class='container-fluid' id='billboard-container'>
@@ -125,7 +355,7 @@
                     </div>
                     <div class='row justify-content-center cta-row'>
                         <div class='col-4 course-price-shape' id='private_pilot_price'></div>
-                        <div class='col-10'> <a href='/'> <button class='btn btn-primary course-cta-shape' type='button'
+                        <div class='col-10'> <a href='/flights'> <button class='btn btn-primary course-cta-shape' type='button'
                                     id='private_pilot_cta'> Explore </button> </a> </div>
                     </div>
                 </div>
@@ -137,8 +367,8 @@
                     <div class='row justify-content-center mt-2 mb-2'>
                         <div class='col-12' id='course-2-image'> <img
                                 alt='Cirrus SR22 representing the Abbyero Aviation Instrument Pilot Aviation School.'
-                                src='assets/images/index/IMG-20250710-WA0013.jpg' height='360' width='640'
-                                onerror='this.onerror=null,this.src="assets/images/index/IMG-20250710-WA0013.jpg"'
+                                src='assets/images/index/N6326W_images (5).jpeg' height='360' width='640'
+                                onerror='this.onerror=null,this.src="assets/images/index/N6326W_images (5).jpeg"'
                                 class='course-image transparent-image'> </div>
                     </div>
                     <div class='row justify-content-center'>
@@ -157,7 +387,7 @@
                     </div>
                     <div class='row justify-content-center cta-row'>
                         <div class='col-4 course-price-shape' id='instrument_pilot_price'></div>
-                        <div class='col-10'> <a href='/'> <button class='btn btn-primary course-cta-shape' type='button'
+                        <div class='col-10'> <a href='/flights'> <button class='btn btn-primary course-cta-shape' type='button'
                                     id='instrument_pilot_cta'>
                                     Explore </button> </a> </div>
                     </div>
@@ -193,7 +423,7 @@
 
                     <div class='row justify-content-center cta-row'>
                         <div class='col-4 course-price-shape' id='commercial_pilot_price'></div>
-                        <div class='col-10'> <a href='/'> <button class='btn btn-primary course-cta-shape' type='button'
+                        <div class='col-10'> <a href='/maintenances'> <button class='btn btn-primary course-cta-shape' type='button'
                                     id='commercial_pilot_cta'>
                                     Explore </button> </a> </div>
                     </div>
@@ -228,7 +458,7 @@
 
                     <div class='row justify-content-center cta-row'>
                         <div class='col-4 course-price-shape' id='remote_pilot_price'></div>
-                        <div class='col-10'> <a href='/'> <button class='btn btn-primary course-cta-shape' type='button'
+                        <div class='col-10'> <a href='/aircraftparts'> <button class='btn btn-primary course-cta-shape' type='button'
                                     id='remote_pilot_cta'> Explore </button> </a> </div>
                     </div>
                 </div>
@@ -608,13 +838,13 @@
             <div style='clear:both'></div>
             <div id='footer_contact'> <span><i class='fa fa-phone-alt'></i> <a href='tel:+1 (915) 9995352'
                         class='px-2'>+1 (915) 9995352</a> 9am-6pm EST Mon - Fri</span> </div>
-            <div class="mt-3" id='footer_social'> <a href='https://www.facebook.com/abbyerofacebook' target='_blank'
+            <div class="mt-3" id='footer_social'> <a href='https://www.facebook.com/profile.php?id=61593295282943' target='_blank'
                     rel='noopener noreferrer'> <img alt='Facebook' src='assets/images/index/fb-icon.webp' height='45'
                         width='45' onerror='this.onerror=null,this.src="assets/images/index/fb-icon.png"'> </a> <a
-                    href='https://www.instagram.com/abbyerosealinstagram' target='_blank' rel='noopener noreferrer'>
+                    href='https://www.instagram.com/abbyeroaviation' target='_blank' rel='noopener noreferrer'>
                     <img alt='Instagram' src='assets/images/index/ig-icon.webp' height='45' width='45'
                         onerror='this.onerror=null,this.src="assets/images/index/ig-icon.png"'> </a> <a
-                    href='https://www.youtube.com/c/abbyeroyoutube' target='_blank' rel='noopener noreferrer'> <img
+                    href='https://www.youtube.com/@AbbyeroAviationLLC' target='_blank' rel='noopener noreferrer'> <img
                         alt='YouTube' src='assets/images/index/yt-icon.webp' height='45' width='45'
                         onerror='this.onerror=null,this.src="assets/images/index/yt-icon.png"'> </a> </div>
         </div>

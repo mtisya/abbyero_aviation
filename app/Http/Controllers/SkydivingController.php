@@ -37,7 +37,7 @@ class SkydivingController extends Controller
             'date' => 'required|date',
             'time' => 'required',
             'available_slots' => 'required|integer',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10048',
         ]);
 
         if ($request->hasFile('image')) {

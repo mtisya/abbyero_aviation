@@ -61,9 +61,9 @@
                                 {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}
                                 at {{ \Carbon\Carbon::parse($event->time)->format('g:i A') }}
                             </p>
-                            <p class="fw-bold mb-3">
+                            <!-- <p class="fw-bold mb-3">
                                 Price: ${{ number_format($event->price, 2) }}
-                            </p>
+                            </p> -->
 
                             <div class="mt-auto">
                                 <a href="{{ route('skydiving.show', $event) }}" class="btn btn-info btn-sm">View</a>

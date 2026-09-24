@@ -1,76 +1,96 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-5 mb-5">
-    <h2>Edit Flight</h2>
+    <div class="container py-4">
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header mb-0 fw-bold" style="background: linear-gradient(#4886a3);">
+                ✈ Edit Aircraft
+            </div>
+
+            <div class="card-body">
+
+                {{-- VALIDATION ERRORS --}}
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('flights.update', $flight->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    {{-- AIRCRAFT INFO --}}
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Aircraft Model</label>
+                            <input type="text" name="aircraft_model" class="form-control"
+                                value="{{ old('aircraft_model', $flight->aircraft_model) }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Registration Number</label>
+                            <input type="text" name="registration_number" class="form-control"
+                                value="{{ old('registration_number', $flight->registration_number) }}" required>
+                        </div>
+
+                        {{-- TACH SYSTEM --}}
+                        <div class="col-md-4">
+                            <label class="form-label">Current Tach</label>
+                            <input type="number" step="0.01" name="current_tach" class="form-control"
+                                value="{{ old('current_tach', $flight->current_tach) }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Current Hobbs</label>
+                            <input type="number" step="0.01" name="current_hobbs" class="form-control"
+                                value="{{ old('current_hobbs', $flight->current_hobbs) }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Hourly Rate ($)</label>
+                            <input type="number" step="0.01" name="hourly_rate" class="form-control"
+                                value="{{ old('hourly_rate', $flight->hourly_rate) }}">
+                        </div>
+
+                        {{-- STATUS --}}
+                        <div class="col-md-12">
+                            <label class="form-label">Aircraft Status</label>
+                            <select name="status" class="form-select" required>
+                                @foreach(['available', 'maintenance', 'grounded'] as $status)
+                                    <option value="{{ $status }}" {{ old('status', $flight->status) == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+
+                    {{-- ACTIONS --}}
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('flights.index') }}"
+                            class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            Update Aircraft
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
         </div>
-    @endif
-
-    <form action="{{ route('flights.update', $flight->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Aircraft Model</label>
-                <input type="text" name="aircraft_model" class="form-control" value="{{ old('aircraft_model', $flight->aircraft_model) }}" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Registration Number</label>
-                <input type="text" name="registration_number" class="form-control" value="{{ old('registration_number', $flight->registration_number) }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Departure Location</label>
-                <input type="text" name="departure_location" class="form-control" value="{{ old('departure_location', $flight->departure_location) }}" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Departure Time</label>
-                <input type="datetime-local" name="departure_time" class="form-control"
-                    value="{{ old('departure_time', \Carbon\Carbon::parse($flight->departure_time)->format('Y-m-d\TH:i')) }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Arrival Location</label>
-                <input type="text" name="arrival_location" class="form-control" value="{{ old('arrival_location', $flight->arrival_location) }}" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Arrival Time</label>
-                <input type="datetime-local" name="arrival_time" class="form-control"
-                    value="{{ old('arrival_time', \Carbon\Carbon::parse($flight->arrival_time)->format('Y-m-d\TH:i')) }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Price (USD)</label>
-                <input type="number" name="price" step="0.01" class="form-control" value="{{ old('price', $flight->price) }}" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select" required>
-                    <option value="">Select status</option>
-                    @foreach(['Scheduled', 'Cancelled', 'Completed', 'Available'] as $status)
-                        <option value="{{ $status }}" {{ old('status', $flight->status) == $status ? 'selected' : '' }}>
-                            {{ $status }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-success me-2">Update Flight</button>
-            <a href="{{ route('flights.index') }}" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
-</div>
+    </div>
 @endsection
