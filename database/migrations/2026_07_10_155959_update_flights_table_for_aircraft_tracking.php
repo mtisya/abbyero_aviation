@@ -1,30 +1,16 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
      */
-   public function up()
+    public function up(): void
     {
-        Schema::table('flights', function (Blueprint $table) {
-
-            $table->dropColumn('next_100hr_due');
-
-            $table->enum('maintenance_status', [
-                'serviceable',
-                'due_soon',
-                'maintenance',
-                'grounded'
-            ])
-            ->default('serviceable')
-            ->change();
-
-        });
+        // The required aircraft maintenance fields are already
+        // created by the 2026_06_28_180004 migration.
     }
 
     /**
@@ -32,6 +18,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        // Nothing to reverse.
     }
 };
