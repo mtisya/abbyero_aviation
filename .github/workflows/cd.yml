@@ -77,7 +77,7 @@ jobs:
 
       - name: Prepare SSH
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ABBYERO_SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.ABBYERO1_SSH_PRIVATE_KEY }}
         run: |
           set -e
 
