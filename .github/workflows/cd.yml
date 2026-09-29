@@ -1,0 +1,200 @@
+name: Abbyero CD
+
+on:
+  workflow_run:
+    workflows:
+      - Abbyero CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: abbyero-production-deployment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to GoDaddy
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout successful commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Verify frontend build
+        run: |
+          test -f public/build/manifest.json
+          echo "Frontend build verified successfully."
+
+      - name: Create deployment package
+        run: |
+          set -e
+
+          mkdir -p deployment/package
+
+          git archive \
+            --format=tar \
+            --output=deployment/package/source.tar \
+            ${{ github.event.workflow_run.head_sha }}
+
+          tar -xf deployment/package/source.tar \
+            -C deployment/package
+
+          rm -f deployment/package/source.tar
+
+          mkdir -p deployment/package/public/build
+
+          cp -R public/build/. \
+            deployment/package/public/build/
+
+          tar -czf \
+            deployment/abbyero-${{ github.event.workflow_run.head_sha }}.tar.gz \
+            -C deployment/package .
+
+          echo "Deployment package created:"
+          ls -lh deployment/abbyero-${{ github.event.workflow_run.head_sha }}.tar.gz
+
+      - name: Prepare SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ABBYERO_SSH_PRIVATE_KEY }}
+        run: |
+          set -e
+
+          mkdir -p ~/.ssh
+
+          printf '%s\n' "$SSH_PRIVATE_KEY" \
+            > ~/.ssh/abbyero_deploy_key
+
+          chmod 600 ~/.ssh/abbyero_deploy_key
+
+          ssh-keyscan -p 22 173.201.179.213 \
+            >> ~/.ssh/known_hosts
+
+      - name: Test GoDaddy SSH connection
+        env:
+          DEPLOY_HOST: 173.201.179.213
+          DEPLOY_USER: ciq6mzlu1oyo
+        run: |
+          set -e
+
+          ssh \
+            -i ~/.ssh/abbyero_deploy_key \
+            -p 22 \
+            -o BatchMode=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "echo 'GoDaddy SSH connection successful.'"
+
+      - name: Upload deployment package
+        env:
+          DEPLOY_HOST: 173.201.179.213
+          DEPLOY_USER: ciq6mzlu1oyo
+          DEPLOY_PATH: /home/ciq6mzlu1oyo/public_html/abbyeroaviation.com/abbyero_aviation
+          PACKAGE: abbyero-${{ github.event.workflow_run.head_sha }}.tar.gz
+        run: |
+          set -e
+
+          scp \
+            -i ~/.ssh/abbyero_deploy_key \
+            -P 22 \
+            deployment/$PACKAGE \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: Deploy application
+        env:
+          DEPLOY_HOST: 173.201.179.213
+          DEPLOY_USER: ciq6mzlu1oyo
+          DEPLOY_PATH: /home/ciq6mzlu1oyo/public_html/abbyeroaviation.com/abbyero_aviation
+          PACKAGE: abbyero-${{ github.event.workflow_run.head_sha }}.tar.gz
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -e
+
+          ssh \
+            -i ~/.ssh/abbyero_deploy_key \
+            -p 22 \
+            -o BatchMode=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -e
+
+             cd '$DEPLOY_PATH'
+
+             test -f artisan
+             test -f .env
+
+             echo 'Production application directory verified.'
+
+             echo 'Creating production backup...'
+
+             mkdir -p deployment-backups
+
+             tar -czf \
+               'deployment-backups/pre-${COMMIT_SHA}.tar.gz' \
+               --exclude='./deployment-backups' \
+               --exclude='./vendor' \
+               --exclude='./storage' \
+               --exclude='./.env' \
+               .
+
+             echo 'Production backup created.'
+
+             echo 'Extracting deployment package...'
+
+             tar -xzf '$PACKAGE'
+
+             rm -f '$PACKAGE'
+
+             echo 'Installing Composer dependencies...'
+
+             composer install \
+               --no-dev \
+               --no-interaction \
+               --prefer-dist \
+               --optimize-autoloader
+
+             echo 'Refreshing Laravel caches...'
+
+             php artisan optimize:clear
+
+             php artisan storage:link || true
+
+             php artisan config:cache
+
+             php artisan route:cache
+
+             php artisan view:cache
+
+             echo 'Verifying Laravel installation...'
+
+             php artisan about
+
+             echo 'Deployment completed successfully.'
+
+             echo 'Deployed commit: ${COMMIT_SHA}'"
+      - name: Deployment complete
+        run: |
+          echo "=========================================="
+          echo "Abbyero Aviation deployment successful"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Branch: main"
+          echo "=========================================="
