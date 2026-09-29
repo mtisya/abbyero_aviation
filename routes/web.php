@@ -221,11 +221,6 @@ Route::post('/notifications/read-one/{id}', function ($id) {
     return response()->json(['success' => true]);
 });
 Route::resource('instructors', InstructorController::class)->middleware('auth');
-Route::get('/instructors', [InstructorController::class, 'index'])->name('instructors.index')->middleware('auth');
-Route::get('/instructors/create', [InstructorController::class, 'create'])->name('instructors.create')->middleware('auth');
-
-
-Route::get('/instructors/{id}', [InstructorController::class, 'show'])->name('instructors.show');
 
 Route::delete('/schedules/{id}/cancel', [StudentController::class, 'cancel'])
     ->name('schedules.cancel');
