@@ -8,8 +8,8 @@
         PAGE HEADER
         ========================================================== --}}
         <div class="d-flex flex-column flex-md-row
-                        justify-content-between align-items-md-center
-                        gap-3 mb-4">
+                            justify-content-between align-items-md-center
+                            gap-3 mb-4">
 
             <div>
                 <h4 class="fw-bold mb-1">
@@ -22,11 +22,9 @@
                 </p>
             </div>
 
-            <a href="{{ route('users.list') }}" class="btn btn-outline-primary btn-sm">
-
+            <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-sm">
                 <i class="fas fa-arrow-left me-1"></i>
-                Back to Users
-
+                Back
             </a>
 
         </div>
@@ -66,8 +64,8 @@
                     <div class="col">
 
                         <div class="d-flex flex-column flex-md-row
-                                        justify-content-between
-                                        align-items-md-center gap-3">
+                                            justify-content-between
+                                            align-items-md-center gap-3">
 
                             <div>
 
@@ -133,8 +131,8 @@
                                     @if ($user->email_verified_at)
 
                                         <span class="badge bg-success-subtle
-                                                            text-success border
-                                                            border-success-subtle">
+                                                                    text-success border
+                                                                    border-success-subtle">
 
                                             <i class="fas fa-envelope-circle-check me-1"></i>
 
@@ -145,8 +143,8 @@
                                     @else
 
                                         <span class="badge bg-warning-subtle
-                                                            text-warning-emphasis border
-                                                            border-warning-subtle">
+                                                                    text-warning-emphasis border
+                                                                    border-warning-subtle">
 
                                             <i class="fas fa-envelope me-1"></i>
 
@@ -185,16 +183,16 @@
 
                     {{-- HEADER --}}
                     <div class="d-flex flex-column flex-lg-row
-                    justify-content-between
-                    align-items-lg-center
-                    gap-3 mb-3">
+                        justify-content-between
+                        align-items-lg-center
+                        gap-3 mb-3">
 
                         <div>
                             <div class="d-flex align-items-center gap-2">
 
                                 <span class="d-inline-flex align-items-center
-                                 justify-content-center rounded-circle
-                                 bg-primary-subtle text-primary" style="width: 34px; height: 34px;">
+                                     justify-content-center rounded-circle
+                                     bg-primary-subtle text-primary" style="width: 34px; height: 34px;">
 
                                     <i class="fas fa-file-invoice-dollar"></i>
 
@@ -211,7 +209,8 @@
                             </small>
                         </div>
 
-                        <a href="#flight-approvedLogbooks" class="btn btn-sm btn-outline-primary align-self-start align-self-lg-center">
+                        <a href="#flight-approvedLogbooks"
+                            class="btn btn-sm btn-outline-primary align-self-start align-self-lg-center">
 
                             <i class="fas fa-file-invoice me-1"></i>
                             View Invoices
@@ -228,11 +227,11 @@
                         <div class="col-6 col-xl-3">
 
                             <div class="invoice-summary-card
-                            bg-light
-                            border
-                            rounded-3
-                            p-3
-                            h-100">
+                                bg-light
+                                border
+                                rounded-3
+                                p-3
+                                h-100">
 
                                 <div class="d-flex justify-content-between align-items-start">
 
@@ -247,8 +246,8 @@
                                     </div>
 
                                     <i class="fas fa-file-invoice
-                                  text-secondary
-                                  opacity-75"></i>
+                                      text-secondary
+                                      opacity-75"></i>
 
                                 </div>
 
@@ -261,12 +260,12 @@
                         <div class="col-6 col-xl-3">
 
                             <div class="invoice-summary-card
-                            bg-success-subtle
-                            border
-                            border-success-subtle
-                            rounded-3
-                            p-3
-                            h-100">
+                                bg-success-subtle
+                                border
+                                border-success-subtle
+                                rounded-3
+                                p-3
+                                h-100">
 
                                 <div class="d-flex justify-content-between align-items-start">
 
@@ -281,8 +280,8 @@
                                     </div>
 
                                     <i class="fas fa-circle-check
-                                  text-success
-                                  opacity-75"></i>
+                                      text-success
+                                      opacity-75"></i>
 
                                 </div>
 
@@ -295,12 +294,12 @@
                         <div class="col-6 col-xl-3">
 
                             <div class="invoice-summary-card
-                            bg-warning-subtle
-                            border
-                            border-warning-subtle
-                            rounded-3
-                            p-3
-                            h-100">
+                                bg-warning-subtle
+                                border
+                                border-warning-subtle
+                                rounded-3
+                                p-3
+                                h-100">
 
                                 <div class="d-flex justify-content-between align-items-start">
 
@@ -315,8 +314,8 @@
                                     </div>
 
                                     <i class="fas fa-clock
-                                  text-warning
-                                  opacity-75"></i>
+                                      text-warning
+                                      opacity-75"></i>
 
                                 </div>
 
@@ -329,12 +328,12 @@
                         <div class="col-6 col-xl-3">
 
                             <div class="invoice-summary-card
-                            bg-primary-subtle
-                            border
-                            border-primary-subtle
-                            rounded-3
-                            p-3
-                            h-100">
+                                bg-primary-subtle
+                                border
+                                border-primary-subtle
+                                rounded-3
+                                p-3
+                                h-100">
 
                                 <div class="d-flex justify-content-between align-items-start">
 
@@ -346,16 +345,16 @@
                                         <div class="fs-5 fw-bold text-abbyero">
 
                                             ${{ number_format(
-                                                $user->invoices->sum('total'),
-                                                2
-                                            ) }}
+        $user->invoices->sum('total'),
+        2
+    ) }}
 
                                         </div>
                                     </div>
 
                                     <i class="fas fa-dollar-sign
-                                  text-primary
-                                  opacity-75"></i>
+                                      text-primary
+                                      opacity-75"></i>
 
                                 </div>
 
@@ -388,8 +387,8 @@
                         <div class="card-body">
 
                             <div class="d-flex
-                                    justify-content-between
-                                    align-items-center">
+                                        justify-content-between
+                                        align-items-center">
 
                                 <div>
 
@@ -404,7 +403,7 @@
                                 </div>
 
                                 <div class="summary-icon bg-secondary-subtle
-                                        text-primary">
+                                            text-primary">
 
                                     <i class="fas fa-calendar-alt"></i>
 
@@ -432,8 +431,8 @@
                         <div class="card-body">
 
                             <div class="d-flex
-                                        justify-content-between
-                                        align-items-center">
+                                            justify-content-between
+                                            align-items-center">
 
                                 <div>
 
@@ -448,7 +447,7 @@
                                 </div>
 
                                 <div class="summary-icon bg-warning-subtle
-                                            text-warning">
+                                                text-warning">
 
                                     <i class="fas fa-paper-plane"></i>
 
@@ -473,8 +472,8 @@
                         <div class="card-body">
 
                             <div class="d-flex
-                                        justify-content-between
-                                        align-items-center">
+                                            justify-content-between
+                                            align-items-center">
 
                                 <div>
 
@@ -489,7 +488,7 @@
                                 </div>
 
                                 <div class="summary-icon bg-info-subtle
-                                            text-info">
+                                                text-info">
 
                                     <i class="fas fa-book"></i>
 
@@ -515,8 +514,8 @@
                         <div class="card-body">
 
                             <div class="d-flex
-                                        justify-content-between
-                                        align-items-center">
+                                            justify-content-between
+                                            align-items-center">
 
                                 <div>
 
@@ -531,7 +530,7 @@
                                 </div>
 
                                 <div class="summary-icon bg-success-subtle
-                                            text-success">
+                                                text-success">
 
                                     <i class="fas fa-check-double"></i>
 
@@ -556,15 +555,15 @@
 
             {{-- HEADER --}}
             <div class="card-header bg-white border-0
-                        d-flex flex-column flex-md-row
-                        justify-content-between align-items-md-center
-                        gap-2 py-3 px-4">
+                            d-flex flex-column flex-md-row
+                            justify-content-between align-items-md-center
+                            gap-2 py-3 px-4">
 
                 <div>
                     <h5 class="fw-bold mb-1">
 
                         <i class="fas fa-file-invoice-dollar
-                                me-2 text-success"></i>
+                                    me-2 text-success"></i>
 
                         Invoices
 
@@ -577,7 +576,7 @@
 
                 {{-- INVOICE COUNT --}}
                 <span class="badge bg-success-subtle text-success
-                            border border-success-subtle px-3 py-2">
+                                border border-success-subtle px-3 py-2">
 
                     <i class="fas fa-check-circle me-1"></i>
 
@@ -642,176 +641,175 @@
 
                                     @foreach($invoice->items as $item)
 
-                                        <tr>
+                                                    <tr>
 
-                                            {{-- INVOICE NUMBER --}}
-                                            <td class="ps-4">
+                                                        {{-- INVOICE NUMBER --}}
+                                                        <td class="ps-4">
 
-                                                <div class="fw-semibold text-abbyero">
+                                                            <div class="fw-semibold text-abbyero">
 
-                                                    {{ $invoice->invoice_number }}
+                                                                {{ $invoice->invoice_number }}
 
-                                                </div>
+                                                            </div>
 
-                                            </td>
-
-
-                                            {{-- FLIGHT --}}
-                                            <td>
-
-                                                <div class="fw-semibold">
-
-                                                    {{ $item->flight?->name
-                                                        ?? $item->flight?->flight_number
-                                                        ?? 'Flight Training' }}
-
-                                                </div>
-
-                                                @if($item->description)
-
-                                                    <small class="text-muted">
-
-                                                        {{ $item->description }}
-
-                                                    </small>
-
-                                                @endif
-
-                                            </td>
+                                                        </td>
 
 
-                                            {{-- DATE --}}
-                                            <td>
+                                                        {{-- FLIGHT --}}
+                                                        <td>
 
-                                                <span class="text-nowrap">
+                                                            <div class="fw-semibold">
 
-                                                    {{ $invoice->invoice_date
-                                                        ? \Carbon\Carbon::parse(
-                                                            $invoice->invoice_date
-                                                        )->format('M d, Y')
-                                                        : '—' }}
+                                                                {{ $item->flight?->name
+                                            ?? $item->flight?->flight_number
+                                            ?? 'Flight Training' }}
 
-                                                </span>
+                                                            </div>
 
-                                            </td>
+                                                            @if($item->description)
 
+                                                                <small class="text-muted">
 
-                                            {{-- HOURS --}}
-                                            <td class="text-center">
+                                                                    {{ $item->description }}
 
-                                                <span class="fw-semibold">
+                                                                </small>
 
-                                                    {{ number_format(
-                                                        (float) $item->quantity,
-                                                        2
-                                                    ) }}
+                                                            @endif
 
-                                                </span>
-
-                                                <small class="text-muted">
-                                                    hrs
-                                                </small>
-
-                                            </td>
+                                                        </td>
 
 
-                                            {{-- AMOUNT --}}
-                                            <td class="text-end">
+                                                        {{-- DATE --}}
+                                                        <td>
 
-                                                <span class="fw-bold">
+                                                            <span class="text-nowrap">
 
-                                                    {{ $invoice->currency }}
-                                                    {{ number_format(
-                                                        (float) $item->amount,
-                                                        2
-                                                    ) }}
+                                                                {{ $invoice->invoice_date
+                                            ? \Carbon\Carbon::parse(
+                                                $invoice->invoice_date
+                                            )->format('M d, Y')
+                                            : '—' }}
 
-                                                </span>
+                                                            </span>
 
-                                            </td>
-
-
-                                            {{-- STATUS --}}
-                                            <td class="text-center">
-
-                                                @php
-                                                    $status = strtolower(
-                                                        $invoice->status ?? 'pending'
-                                                    );
-                                                @endphp
-
-                                                @if($status === 'paid')
-
-                                                    <span class="badge
-                                                                bg-success-subtle
-                                                                text-success
-                                                                border
-                                                                border-success-subtle
-                                                                px-2 py-1">
-
-                                                        <i class="fas fa-check-circle
-                                                                me-1"></i>
-
-                                                        Paid
-
-                                                    </span>
-
-                                                @elseif($status === 'cancelled')
-
-                                                    <span class="badge
-                                                                bg-danger-subtle
-                                                                text-danger
-                                                                border
-                                                                border-danger-subtle
-                                                                px-2 py-1">
-
-                                                        <i class="fas fa-times-circle
-                                                                me-1"></i>
-
-                                                        Cancelled
-
-                                                    </span>
-
-                                                @else
-
-                                                    <span class="badge
-                                                                bg-warning-subtle
-                                                                text-warning-emphasis
-                                                                border
-                                                                border-warning-subtle
-                                                                px-2 py-1">
-
-                                                        <i class="fas fa-clock
-                                                                me-1"></i>
-
-                                                        Pending
-
-                                                    </span>
-
-                                                @endif
-
-                                            </td>
+                                                        </td>
 
 
-                                            {{-- VIEW INVOICE --}}
-                                            <td class="text-center pe-4">
+                                                        {{-- HOURS --}}
+                                                        <td class="text-center">
 
-                                                <a href="{{ route(
-                                                    'invoices.show',
-                                                    $invoice->id
-                                                ) }}"
-                                                class="btn btn-sm btn-outline-primary
-                                                        text-nowrap">
+                                                            <span class="fw-semibold">
 
-                                                    <i class="fas fa-eye me-1"></i>
+                                                                {{ number_format(
+                                            (float) $item->quantity,
+                                            2
+                                        ) }}
 
-                                                    View
+                                                            </span>
 
-                                                </a>
+                                                            <small class="text-muted">
+                                                                hrs
+                                                            </small>
 
-                                            </td>
+                                                        </td>
 
-                                        </tr>
+
+                                                        {{-- AMOUNT --}}
+                                                        <td class="text-end">
+
+                                                            <span class="fw-bold">
+
+                                                                {{ $invoice->currency }}
+                                                                {{ number_format(
+                                            (float) $item->amount,
+                                            2
+                                        ) }}
+
+                                                            </span>
+
+                                                        </td>
+
+
+                                                        {{-- STATUS --}}
+                                                        <td class="text-center">
+
+                                                            @php
+                                                                $status = strtolower(
+                                                                    $invoice->status ?? 'pending'
+                                                                );
+                                                            @endphp
+
+                                                            @if($status === 'paid')
+
+                                                                <span class="badge
+                                                                                                bg-success-subtle
+                                                                                                text-success
+                                                                                                border
+                                                                                                border-success-subtle
+                                                                                                px-2 py-1">
+
+                                                                    <i class="fas fa-check-circle
+                                                                                                me-1"></i>
+
+                                                                    Paid
+
+                                                                </span>
+
+                                                            @elseif($status === 'cancelled')
+
+                                                                <span class="badge
+                                                                                                bg-danger-subtle
+                                                                                                text-danger
+                                                                                                border
+                                                                                                border-danger-subtle
+                                                                                                px-2 py-1">
+
+                                                                    <i class="fas fa-times-circle
+                                                                                                me-1"></i>
+
+                                                                    Cancelled
+
+                                                                </span>
+
+                                                            @else
+
+                                                                <span class="badge
+                                                                                                bg-warning-subtle
+                                                                                                text-warning-emphasis
+                                                                                                border
+                                                                                                border-warning-subtle
+                                                                                                px-2 py-1">
+
+                                                                    <i class="fas fa-clock
+                                                                                                me-1"></i>
+
+                                                                    Pending
+
+                                                                </span>
+
+                                                            @endif
+
+                                                        </td>
+
+
+                                                        {{-- VIEW INVOICE --}}
+                                                        <td class="text-center pe-4">
+
+                                                            <a href="{{ route(
+                                            'invoices.show',
+                                            $invoice->id
+                                        ) }}" class="btn btn-sm btn-outline-primary
+                                                                                    text-nowrap">
+
+                                                                <i class="fas fa-eye me-1"></i>
+
+                                                                View
+
+                                                            </a>
+
+                                                        </td>
+
+                                                    </tr>
 
                                     @endforeach
 
@@ -831,12 +829,11 @@
                         <div class="mb-3">
 
                             <span class="d-inline-flex
-                                        align-items-center
-                                        justify-content-center
-                                        rounded-circle
-                                        bg-light
-                                        text-muted"
-                                style="width: 64px; height: 64px;">
+                                                align-items-center
+                                                justify-content-center
+                                                rounded-circle
+                                                bg-light
+                                                text-muted" style="width: 64px; height: 64px;">
 
                                 <i class="fas fa-file-invoice-dollar fa-2x"></i>
 
@@ -867,15 +864,15 @@
         <div id="flight-logbooks" class="card border-0 shadow-sm mb-4">
 
             <div class="card-header bg-white border-0
-                            d-flex justify-content-between
-                            align-items-center py-3 px-4">
+                                d-flex justify-content-between
+                                align-items-center py-3 px-4">
 
                 <div>
 
                     <h5 class="fw-bold mb-1">
 
                         <i class="fas fa-book
-                                      me-2 text-info"></i>
+                                          me-2 text-info"></i>
 
                         Flight Logbooks
 
@@ -929,7 +926,7 @@
                                                         {{ $logbook->flight_date
                                 ? \Carbon\Carbon::parse($logbook->flight_date)->format('d M Y')
                                 : '—'
-                                                                                    }}
+                                                                                                            }}
 
                                                     </td>
 
@@ -991,14 +988,14 @@
 
                                                 </tr>
 
-                                @empty
+                            @empty
 
                                 <tr>
 
                                     <td colspan="7" class="text-center text-muted py-5">
 
                                         <i class="fas fa-book-open
-                                                              fa-2x mb-2 opacity-50"></i>
+                                                                      fa-2x mb-2 opacity-50"></i>
 
                                         <div class="fw-semibold">
                                             No logbooks
@@ -1030,15 +1027,15 @@
         <div id="flight-dispatch" class="card border-0 shadow-sm mb-4">
 
             <div class="card-header bg-white border-0
-                            d-flex justify-content-between
-                            align-items-center py-3 px-4">
+                                d-flex justify-content-between
+                                align-items-center py-3 px-4">
 
                 <div>
 
                     <h5 class="fw-bold mb-1">
 
                         <i class="fas fa-paper-plane
-                                      me-2 text-warning"></i>
+                                          me-2 text-warning"></i>
 
                         Dispatches
 
@@ -1154,7 +1151,7 @@
                                     <td colspan="7" class="text-center text-muted py-5">
 
                                         <i class="fas fa-paper-plane
-                                                              fa-2x mb-2 opacity-50"></i>
+                                                                      fa-2x mb-2 opacity-50"></i>
 
                                         <div class="fw-semibold">
                                             No dispatches
@@ -1186,15 +1183,15 @@
         <div id="flight-schedules" class="card border-0 shadow-sm mb-4">
 
             <div class="card-header bg-white border-0
-                            d-flex justify-content-between
-                            align-items-center py-3 px-4">
+                                d-flex justify-content-between
+                                align-items-center py-3 px-4">
 
                 <div>
 
                     <h5 class="fw-bold mb-1">
 
                         <i class="fas fa-calendar-alt
-                                      me-2 text-primary"></i>
+                                          me-2 text-primary"></i>
 
                         Flight Schedules
 
@@ -1267,7 +1264,7 @@
                                     <td class="text-nowrap">
 
                                         <i class="fas fa-clock
-                                                              text-muted me-1"></i>
+                                                                      text-muted me-1"></i>
 
                                         {{ $schedule->start_time?->format('H:i') ?? '—' }}
 
@@ -1307,7 +1304,7 @@
                                     <td colspan="6" class="text-center text-muted py-5">
 
                                         <i class="fas fa-calendar-times
-                                                              fa-2x mb-2 opacity-50"></i>
+                                                                      fa-2x mb-2 opacity-50"></i>
 
                                         <div class="fw-semibold">
                                             No flight schedules
@@ -1345,8 +1342,8 @@
         }
 
         /* =========================================================
-            FLIGHT STATUS COLORS
-            ========================================================= */
+                FLIGHT STATUS COLORS
+                ========================================================= */
 
         .summary-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1401,8 +1398,8 @@
         }
 
         /* =========================================================
-               PROFILE
-            ========================================================= */
+                   PROFILE
+                ========================================================= */
 
         .user-profile-card {
             border-left: 4px solid var(--abbyero-blue) !important;
@@ -1438,8 +1435,8 @@
 
 
         /* =========================================================
-               SUMMARY CARDS
-            ========================================================= */
+                   SUMMARY CARDS
+                ========================================================= */
 
         .summary-card {
             transition:
@@ -1482,8 +1479,8 @@
 
 
         /* =========================================================
-               DETAIL TABLES
-            ========================================================= */
+                   DETAIL TABLES
+                ========================================================= */
 
         .user-detail-table {
             font-size: .88rem;
@@ -1520,8 +1517,8 @@
 
 
         /* =========================================================
-               BADGES
-            ========================================================= */
+                   BADGES
+                ========================================================= */
 
         .badge {
             font-weight: 600;
@@ -1530,8 +1527,8 @@
 
 
         /* =========================================================
-               MOBILE
-            ========================================================= */
+                   MOBILE
+                ========================================================= */
 
         @media (max-width: 767.98px) {
 
@@ -1587,8 +1584,8 @@
 
 
         /* =========================================================
-               SMALL PHONES
-            ========================================================= */
+                   SMALL PHONES
+                ========================================================= */
 
         @media (max-width: 575.98px) {
 

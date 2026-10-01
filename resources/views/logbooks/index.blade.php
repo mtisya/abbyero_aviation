@@ -1,9 +1,240 @@
 @extends('layout')
 
 @section('content')
-    <div class="container">
+    <style>
+        /* ================================
+       LOGBOOK TABLE
+       ================================ */
+
+        .logbook-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+        }
+
+        .logbook-table {
+            width: 100%;
+            min-width: 1250px;
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .logbook-table th {
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.7rem 0.6rem;
+        }
+
+        .logbook-table td {
+            font-size: 0.9rem;
+            padding: 0.65rem 0.55rem;
+        }
+
+        /* Keep important values together */
+        .logbook-table .text-nowrap {
+            white-space: nowrap;
+        }
+
+        .route-cell {
+            min-width: 120px;
+            max-width: 180px;
+            white-space: normal;
+        }
+
+        .meter-cell {
+            min-width: 145px;
+            white-space: nowrap;
+        }
+
+        .meter-value {
+            font-weight: 600;
+        }
+
+        .arrow {
+            padding: 0 3px;
+            font-weight: normal;
+        }
+
+        .status-cell {
+            min-width: 110px;
+            white-space: nowrap;
+        }
+
+        .actions-cell {
+            min-width: 150px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.35rem;
+            flex-wrap: nowrap;
+        }
+
+        .action-btn {
+            min-width: 34px;
+            white-space: nowrap;
+        }
+
+        .approve-btn {
+            white-space: nowrap;
+        }
+
+        /* ================================
+       TABLET
+       ================================ */
+
+        @media (max-width: 991.98px) {
+
+            .logbook-table {
+                min-width: 1150px;
+            }
+
+            .logbook-table th,
+            .logbook-table td {
+                font-size: 0.9rem;
+                padding: 0.55rem 0.45rem;
+            }
+
+            .meter-cell {
+                min-width: 135px;
+            }
+
+            .actions-cell {
+                min-width: 135px;
+            }
+        }
 
 
+        /* ================================
+       MOBILE
+       ================================ */
+
+        @media (max-width: 767.98px) {
+
+            .logbook-table-wrapper {
+                margin-left: -0.25rem;
+                margin-right: -0.25rem;
+                width: calc(100% + 0.5rem);
+
+                /* Make horizontal scrolling obvious */
+                border: 1px solid #dee2e6;
+            }
+
+            .logbook-table {
+                min-width: 1050px;
+            }
+
+            .logbook-table th {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.4rem;
+            }
+
+            .logbook-table td {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.4rem;
+            }
+
+            .meter-cell {
+                min-width: 125px;
+            }
+
+            .route-cell {
+                min-width: 100px;
+                max-width: 140px;
+            }
+
+            .status-cell {
+                min-width: 100px;
+            }
+
+            .actions-cell {
+                min-width: 120px;
+            }
+
+            .action-buttons {
+                gap: 0.25rem;
+            }
+
+            .action-btn {
+                padding: 0.25rem 0.4rem;
+            }
+
+            .action-label {
+                display: none;
+            }
+
+            .approve-btn {
+                padding: 0.25rem 0.45rem;
+                font-size: 0.7rem;
+            }
+
+            .approve-btn i {
+                margin-right: 0 !important;
+            }
+
+        }
+
+
+        /* ================================
+       VERY SMALL PHONES
+       ================================ */
+
+        @media (max-width: 400px) {
+
+            .logbook-table {
+                min-width: 1000px;
+            }
+
+            .logbook-table th,
+            .logbook-table td {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.35rem;
+            }
+
+            .meter-cell {
+                min-width: 115px;
+            }
+
+            .actions-cell {
+                min-width: 110px;
+            }
+
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4886a3;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .min-width-0 {
+            min-width: 0;
+        }
+
+        .user-name {
+            display: block;
+            max-width: 140px;
+            color: #4886a3 !important;
+        }
+
+        .user-name:hover {
+            color: #0d6efd !important;
+            text-decoration: underline !important;
+        }
+    </style>
+    <div class="container-fluid px-2 px-sm-3 px-md-4 px-lg-5">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 mt-3">
             <h3 class="mb-3 mb-md-0">✈ Logbooks</h3>
 
@@ -89,147 +320,211 @@
         </form>
 
 
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center">
+
+        <div class="table-responsive logbook-table-wrapper">
+
+            <table class="table table-bordered align-middle text-center logbook-table">
+
                 <thead class="table-light">
                     <tr>
                         <th>SN</th>
+                        <th>Owner</th>
                         <th>Date</th>
                         <th>Aircraft</th>
                         <th>Route</th>
                         <th>Type</th>
                         <th>HOBBS</th>
                         <th>TACH</th>
-                        <th>FlightTime</th>
-                        <th>BlockTime</th>
+                        <th>Flight Time</th>
+                        <th>Block Time</th>
                         <th>Cost (USD)</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach($logbooks as $log)
+
                         @php
                             $flownMinutes = $log->hours * 60;
+
+                            $canEdit =
+                                (
+                                    Auth::user()->role === 'student' &&
+                                    !$log->approved &&
+                                    Auth::user()->student?->id === $log->student_id
+                                ) ||
+                                (
+                                    in_array(Auth::user()->role, ['admin', 'instructor'])
+                                );
+
+                            $canDelete =
+                                Auth::user()->role === 'admin' ||
+                                (
+                                    Auth::user()->role === 'student' &&
+                                    !$log->approved &&
+                                    Auth::user()->student?->id === $log->student_id
+                                );
                         @endphp
 
                         <tr>
+
                             {{-- SN --}}
-                            <td>{{ $loop->iteration + ($logbooks->currentPage() - 1) * $logbooks->perPage() }}</td>
-
-                            {{-- Date --}}
-                            <td>{{ $log->flight_date }}</td>
-
-                            {{-- Aircraft --}}
-                            <td>{{ $log->aircraft }}</td>
-
-                            {{-- Route --}}
-                            <td>{{ $log->route }}</td>
-
-                            {{-- Type --}}
-                            <td>{{ ucfirst($log->type) }}</td>
-
-                            {{-- HOBBS --}}
-                            <td>
-                                <div class="d-flex flex-column">
-                                    <span class="fw-bold text-primary">
-                                        {{ number_format($log->hobbs_start, 1) }} → {{ number_format($log->hobbs_end, 1) }}
-                                    </span>
-                                    <small class="text-muted">
-                                        Total: {{ number_format($log->hobbs_time, 1) }} hrs
-                                    </small>
-                                </div>
+                            <td class="text-nowrap">
+                                {{ $loop->iteration + ($logbooks->currentPage() - 1) * $logbooks->perPage() }}
                             </td>
 
-                            {{-- TACH --}}
+                            {{-- OWNER --}}
                             <td>
-                                <div class="d-flex flex-column">
-                                    <span class="fw-bold text-warning">
-                                        {{ number_format($log->tach_start, 1) }} → {{ number_format($log->tach_end, 1) }}
-                                    </span>
-                                    <small class="text-muted">
-                                        Engine: {{ number_format($log->tach_time, 1) }} hrs
-                                    </small>
-                                </div>
-                            </td>
+                                @if($log->user)
+                                    <div class="d-flex align-items-center gap-2">
 
-                            {{-- Flight Time --}}
-                            <td>{{ $log->hours * 60 }} min</td>
+                                        <div class="user-avatar">
+                                            {{ strtoupper(substr($log->user->name, 0, 1)) }}
+                                        </div>
 
-                            {{-- Remaining --}}
-                            <td>
-                                {{ intdiv($log->remaining_block_minutes, 60) }}h
-                                {{ $log->remaining_block_minutes % 60 }} min
-                            </td>
+                                        <div class="min-width-0">
+                                            <a href="{{ route('admin.users.show', $log->user->id) }}"
+                                                class="fw-semibold text-dark text-decoration-none text-truncate user-name"
+                                                title="View {{ $log->user->name }}">
+                                                {{ $log->user->name }}
+                                            </a>
+                                        </div>
 
-                            {{-- Cost --}}
-                            <td>{{ number_format($log->flight_cost, 2) }}</td>
-
-                            {{-- Status --}}
-                            <td>
-                                @if($log->approved)
-                                    <span class="badge bg-success">Approved</span>
+                                    </div>
                                 @else
-                                    <span class="badge bg-warning">Pending</span>
-
-                                    @if(
-                                            Auth::user()->role === 'instructor' ||
-                                            (
-                                                in_array(Auth::user()->role, ['admin', 'instructor'])
-                                            )
-                                        )
-                                        <form method="POST" action="{{ route('logbook.approve', $log->id) }}" class="mt-1">
-                                            @csrf
-                                            <button class="btn btn-sm btn-success">
-                                                Approve
-                                            </button>
-                                        </form>
-                                    @endif
+                                    <span class="text-muted">—</span>
                                 @endif
                             </td>
 
-                            {{-- ACTIONS --}}
-                            <td class="text-center">
+                            {{-- DATE --}}
+                            <td class="text-nowrap">
+                                {{ $log->flight_date }}
+                            </td>
 
-                                <div class="d-flex justify-content-center gap-2">
+                            {{-- AIRCRAFT --}}
+                            <td class="text-nowrap">
+                                {{ $log->aircraft }}
+                            </td>
+
+                            {{-- ROUTE --}}
+                            <td class="route-cell">
+                                {{ $log->route }}
+                            </td>
+
+                            {{-- TYPE --}}
+                            <td class="text-nowrap">
+                                {{ ucfirst($log->type) }}
+                            </td>
+
+                            {{-- HOBBS --}}
+                            <td class="meter-cell">
+                                <div class="meter-value text-primary">
+                                    {{ number_format($log->hobbs_start, 1) }}
+                                    <span class="arrow">→</span>
+                                    {{ number_format($log->hobbs_end, 1) }}
+                                </div>
+
+                                <small class="text-muted d-block">
+                                    Total: {{ number_format($log->hobbs_time, 1) }} hrs
+                                </small>
+                            </td>
+
+                            {{-- TACH --}}
+                            <td class="meter-cell">
+                                <div class="meter-value text-warning">
+                                    {{ number_format($log->tach_start, 1) }}
+                                    <span class="arrow">→</span>
+                                    {{ number_format($log->tach_end, 1) }}
+                                </div>
+
+                                <small class="text-muted d-block">
+                                    Engine: {{ number_format($log->tach_time, 1) }} hrs
+                                </small>
+                            </td>
+
+                            {{-- FLIGHT TIME --}}
+                            <td class="text-nowrap">
+                                {{ $flownMinutes }} min
+                            </td>
+
+                            {{-- BLOCK TIME --}}
+                            <td class="text-nowrap">
+                                @if($log->remaining_block_minutes !== null)
+                                    {{ intdiv($log->remaining_block_minutes, 60) }}h
+                                    {{ $log->remaining_block_minutes % 60 }} min
+                                @else
+                                    —
+                                @endif
+                            </td>
+
+                            {{-- COST --}}
+                            <td class="text-nowrap">
+                                ${{ number_format($log->flight_cost, 2) }}
+                            </td>
+
+                            {{-- STATUS --}}
+                            <td class="status-cell">
+
+                                @if($log->approved)
+
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                    @if(in_array(Auth::user()->role, ['admin', 'instructor']))
+
+                                        <form method="POST" action="{{ route('logbook.approve', $log->id) }}" class="mt-2">
+
+                                            @csrf
+
+                                            <button type="submit" class="btn btn-sm btn-success approve-btn">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Approve
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
+                                @endif
+
+                            </td>
+
+                            {{-- ACTIONS --}}
+                            <td class="actions-cell">
+
+                                <div class="action-buttons">
 
                                     {{-- VIEW --}}
                                     <button type="button" class="btn btn-sm btn-outline-info action-btn"
                                         onclick="openLogbook({{ $log->id }})" title="View Logbook">
                                         <i class="bi bi-eye"></i>
+                                        <span class="action-label">View</span>
                                     </button>
 
                                     {{-- EDIT --}}
-                                    @php
-                                        $canEdit =
-                                            (
-                                                Auth::user()->role === 'student' &&
-                                                !$log->approved &&
-                                                Auth::user()->student?->id === $log->student_id
-                                            ) ||
-                                            (
-                                                in_array(Auth::user()->role, ['admin', 'instructor'])
-                                            );
-                                    @endphp
-
                                     @if($canEdit)
+
                                         <button type="button" class="btn btn-sm btn-outline-warning action-btn"
                                             onclick="openEditModal({{ $log->id }})" title="Edit Logbook">
                                             <i class="bi bi-pencil-square"></i>
+                                            <span class="action-label">Edit</span>
                                         </button>
+
                                     @endif
 
                                     {{-- DELETE --}}
-                                    @if(
-                                            Auth::user()->role === 'admin' ||
-                                            (
-                                                Auth::user()->role === 'student' &&
-                                                !$log->approved &&
-                                                Auth::user()->student?->id === $log->student_id
-                                            )
-                                        )
+                                    @if($canDelete)
 
-                                        <form method="POST" action="{{ route('logbooks.destroy', $log) }}" class="m-0">
+                                        <form method="POST" action="{{ route('logbooks.destroy', $log) }}" class="m-0 delete-form">
 
                                             @csrf
                                             @method('DELETE')
@@ -237,6 +532,7 @@
                                             <button type="button" class="btn btn-sm btn-outline-danger action-btn delete-btn"
                                                 title="Delete Logbook">
                                                 <i class="bi bi-trash"></i>
+                                                <span class="action-label">Delete</span>
                                             </button>
 
                                         </form>
@@ -246,13 +542,19 @@
                                 </div>
 
                             </td>
+
                         </tr>
+
                     @endforeach
                 </tbody>
+
             </table>
 
         </div>
     </div>
+
+
+
     <div class="card-footer d-flex justify-content-center">
         {{ $logbooks->withQueryString()->links() }}
     </div>
@@ -578,12 +880,11 @@
 
                                         <input type="number" step="0.1" min="0.1" name="block_time" id="blockTimeInput"
                                             class="form-control" value="{{ old(
-        'block_time',
-        $hasInitialBlockTime
-        ? $userBlockTime->initial_block_time
-        : ''
-    ) }}" placeholder="Enter initial block hours"
-                                            @disabled($hasInitialBlockTime)>
+                                                'block_time',
+                                                $hasInitialBlockTime
+                                                ? $userBlockTime->initial_block_time
+                                                : ''
+                                            ) }}" placeholder="Enter initial block hours" @disabled($hasInitialBlockTime)>
 
                                         <button type="button" class="btn btn-success" id="addBlockTimeButton"
                                             title="Request Additional Block Time">
@@ -615,9 +916,9 @@
 
                                             <strong>
                                                 {{ number_format(
-        $userBlockTime?->initial_block_time ?? 0,
-        1
-    ) }}
+                                                    $userBlockTime?->initial_block_time ?? 0,
+                                                    1
+                                                ) }}
                                             </strong>
 
                                             hrs
@@ -628,9 +929,9 @@
 
                                             <strong>
                                                 {{ number_format(
-        $userBlockTime?->approved_additional_block_time ?? 0,
-        1
-    ) }}
+                                                    $userBlockTime?->approved_additional_block_time ?? 0,
+                                                    1
+                                                ) }}
                                             </strong>
 
                                             hrs
@@ -641,9 +942,9 @@
 
                                             <strong>
                                                 {{ number_format(
-        $userBlockTime?->approved_flown_time ?? 0,
-        2
-    ) }}
+                                                    $userBlockTime?->approved_flown_time ?? 0,
+                                                    2
+                                                ) }}
                                             </strong>
 
                                             hrs
@@ -655,9 +956,9 @@
 
                                             <strong id="remainingBlockTime">
                                                 {{ number_format(
-        $userBlockTime?->remaining_block_time ?? 0,
-        1
-    ) }}
+                                                    $userBlockTime?->remaining_block_time ?? 0,
+                                                    1
+                                                ) }}
                                             </strong>
 
                                             hrs
@@ -866,11 +1167,11 @@
             const body = document.getElementById('logbookModalBody');
 
             body.innerHTML = `
-                                            <div class="text-center py-5">
-                                                <div class="spinner-border text-primary"></div>
-                                                <p class="mt-2">Loading logbook...</p>
-                                            </div>
-                                        `;
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2">Loading logbook...</p>
+                </div>
+            `;
 
             fetch(`/logbooks/${id}`)
                 .then(res => res.text())
@@ -879,10 +1180,10 @@
                 })
                 .catch(() => {
                     body.innerHTML = `
-                                                    <div class="alert alert-danger">
-                                                        Failed to load logbook data
-                                                    </div>
-                                                `;
+                        <div class="alert alert-danger">
+                            Failed to load logbook data
+                        </div>
+                    `;
                 });
         }
 
@@ -1328,14 +1629,14 @@
                         icon: 'warning',
                         title: 'Invalid Tach/Hobbs Entry',
                         html: `
-                        Hobbs: ${hobbs.toFixed(2)}<br>
-                        Tach: ${tach.toFixed(2)}<br><br>
+                            Hobbs: ${hobbs.toFixed(2)}<br>
+                            Tach: ${tach.toFixed(2)}<br><br>
 
-                        <strong>
-                            Tach must be at least 5 minutes
-                            less than Hobbs.
-                        </strong>
-                    `
+                            <strong>
+                                Tach must be at least 5 minutes
+                                less than Hobbs.
+                            </strong>
+                        `
                     });
                 }
 
@@ -1354,14 +1655,14 @@
                         icon: 'warning',
                         title: 'Large Tach/Hobbs Difference',
                         html: `
-                        Hobbs: ${hobbs.toFixed(2)}<br>
-                        Tach: ${tach.toFixed(2)}<br><br>
+                            Hobbs: ${hobbs.toFixed(2)}<br>
+                            Tach: ${tach.toFixed(2)}<br><br>
 
-                        <strong>
-                            The difference between Hobbs
-                            and Tach cannot exceed 2 hours.
-                        </strong>
-                    `
+                            <strong>
+                                The difference between Hobbs
+                                and Tach cannot exceed 2 hours.
+                            </strong>
+                        `
                     });
                 }
 
@@ -1593,7 +1894,7 @@
 
             @endif
 
-            });
+                });
         document
             .getElementById('addBlockTimeButton')
             ?.addEventListener('click', () => {

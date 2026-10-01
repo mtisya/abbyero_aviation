@@ -1,7 +1,8 @@
 @extends('layoutadmin')
 
 @section('content')
-    <div class="container mt-5 mb-5">
+        <div class="container-fluid px-2 px-sm-2 px-md-3 px-lg-5 py-5 py-sm-2 py-md-3 py-lg-5">
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
 
             <div class="d-flex align-items-center gap-3 mb-3">
