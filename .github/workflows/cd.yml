@@ -172,6 +172,16 @@ jobs:
                --prefer-dist \
                --optimize-autoloader
 
+             echo 'Checking production migration status...'
+
+             php artisan migrate:status
+
+             echo 'Running pending database migrations...'
+
+             php artisan migrate --force
+
+             echo 'Production database migrations completed.'  
+
              echo 'Refreshing Laravel caches...'
 
              php artisan optimize:clear
