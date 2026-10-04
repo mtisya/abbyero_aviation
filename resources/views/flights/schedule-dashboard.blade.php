@@ -43,7 +43,7 @@
                 {{-- Calendar --}}
                 <a href="{{ route('calendar') }}" class="btn btn-sm btn-primary d-flex align-items-center">
                     <i class="bi bi-calendar2-week me-1"></i>
-                   Full Calendar View
+                   Full Calendar
                 </a>
 
                 {{-- Dispatch --}}
@@ -84,7 +84,6 @@
                                         <th>Start</th>
                                         <th>End</th>
                                         <th>Status</th>
-                                        <th width="100">Actions</th>
                                     </tr>
                                 </thead>
 
@@ -151,23 +150,6 @@
                                                 <span class="badge bg-{{ $color }}">
                                                     {{ ucfirst($s->status) }}
                                                 </span>
-                                            </td>
-
-                                            {{-- Actions --}}
-                                            <td class="text-center">
-                                                <a href="{{ route('flights.schedule.edit', $s->id) }}"
-                                                    class="btn btn-sm btn-outline-warning mb-1 mb-md-0">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-
-                                                <form method="POST" action="{{ route('flights.schedule.destroy', $s->id) }}"
-                                                    class="d-inline delete-schedule-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
                                             </td>
 
                                         </tr>

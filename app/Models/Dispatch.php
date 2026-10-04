@@ -25,7 +25,7 @@ class Dispatch extends Model
         'dispatch_time' => 'datetime',
     ];
 
-    public const STATUS_DISPATCHED = 'dispatched';
+    public const STATUS_DISPATCHED = 'Dispatched';
     public const STATUS_IN_FLIGHT = 'in_flight';
     public const STATUS_COMPLETED = 'completed';
 

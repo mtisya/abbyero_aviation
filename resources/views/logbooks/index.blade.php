@@ -233,8 +233,9 @@
             color: #0d6efd !important;
             text-decoration: underline !important;
         }
+        
     </style>
-    <div class="container-fluid px-2 px-sm-3 px-md-4 px-lg-5">
+    <div class="container-fluid px-2 px-sm-3 px-md-4 px-lg-3">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 mt-3">
             <h3 class="mb-3 mb-md-0">✈ Logbooks</h3>
 
@@ -757,16 +758,19 @@
 
                             <div class="row g-3">
 
-                                <div class="col-md-6">
-
-                                    <label class="form-label">
+                                <div class="col-12 col-md-6">
+                                    <label for="aircraftSelect" class="form-label">
                                         Schedule / Aircraft
                                     </label>
 
-                                    <select name="aircraft" id="aircraftSelect" class="form-select" required>
+                                    <select
+                                        name="aircraft"
+                                        id="aircraftSelect"
+                                        class="form-select aircraft-select"
+                                        required
+                                    >
                                         <option value="">Loading schedules...</option>
                                     </select>
-
                                 </div>
 
                                 <div class="col-md-3">
