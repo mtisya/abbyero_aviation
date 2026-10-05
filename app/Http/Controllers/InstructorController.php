@@ -97,9 +97,10 @@ class InstructorController extends Controller
         $instructorId = auth()->id();
 
         // Students assigned to this instructor
-        $students = Student::with('user')
-            ->where('instructor_id', $instructorId)
-            ->get();
+        $students = Student::where('instructor_id', auth()->id())
+    ->whereHas('user')
+    ->with(['user', 'logbooks'])
+    ->get();
         $bookedFlights = Booking::where('user_id', Auth::id())
             ->with('flight')
             ->get();

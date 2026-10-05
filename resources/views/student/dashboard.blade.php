@@ -1,7 +1,7 @@
 @extends('layoutstudent')
 
 @section('content')
-    <div class="container mt-5 mb-5">
+    <div class="container-fluid px-2 px-sm-2 px-md-3 px-lg-5 py-5 py-sm-2 py-md-3 py-lg-5">
         @auth
             @if(in_array(Auth::user()->role, ['admin', 'instructor', 'student']))
 
@@ -17,21 +17,29 @@
                         </h3>
 
                     </div>
+                        {{-- Action Buttons --}}
+                        <div class="d-flex flex-column flex-sm-row gap-2">
 
-                    {{-- Action Buttons --}}
-                    <div class="d-flex flex-column flex-sm-row gap-2">
+                            <a href="{{ route('admin.users.show', auth()->id()) }}"
+                            class="btn btn-tertiary shadow-sm">
+                                <i class="bi bi-person-circle me-1"></i>
+                                My Profile
+                            </a>
 
-                        <a href="{{ route('flight.schedules') }}" class="btn btn-success shadow-sm">
-                            <i class="bi bi-calendar-event me-1"></i>
-                            Schedule Flight
-                        </a>
+                            <a href="{{ route('flight.schedules') }}"
+                            class="btn btn-success shadow-sm">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                Schedule Flight
+                            </a>
 
-                        <a href="{{ route('logbooks.index') }}" class="btn btn-primary shadow-sm">
-                            <i class="bi bi-journal-text me-1"></i>
-                            Logbooks
-                        </a>
+                            <a href="{{ route('logbooks.index') }}"
+                            class="btn btn-primary shadow-sm">
+                                <i class="bi bi-journal-text me-1"></i>
+                                Logbooks
+                            </a>
 
-                    </div>
+                        </div>
+
 
                 </div>
 

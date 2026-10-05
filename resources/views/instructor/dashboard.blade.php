@@ -1,7 +1,7 @@
 @extends('layoutinstructor')
 
 @section('content')
-    <div class="container mt-5 mb-5">
+    <div class="container-fluid px-2 px-sm-2 px-md-3 px-lg-5 py-5 py-sm-2 py-md-3 py-lg-5">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
 
             {{-- Title --}}
@@ -42,17 +42,22 @@
                 </a>
 
                 <!-- Aircraft Parts -->
-                <a href="{{ route('aircraft_parts.list') }}"
+                <!-- <a href="{{ route('aircraft_parts.list') }}"
                 class="btn shadow-sm btn-warning text-dark flex-fill flex-sm-auto">
                     <i class="bi bi-gear-wide-connected me-1"></i>
                     Aircraft Parts
-                </a>
+                </a> -->
 
                 <!-- User Management -->
                 <a href="{{ route('users.list') }}"
                 class="btn shadow-sm btn-dark flex-fill flex-sm-auto">
                     <i class="bi bi-people-fill me-1"></i>
                     Manage Users
+                </a>
+                <a href="{{ route('admin.users.show', auth()->id()) }}"
+                class="btn btn-tertiary shadow-sm">
+                    <i class="bi bi-person-circle me-1"></i>
+                    My Profile
                 </a>
 
             </div>
@@ -145,69 +150,106 @@
                                 @else
                                     <ul class="list-group">
 
-                                        @foreach($students as $student)
-                                            <li class="list-group-item">
+                                @forelse($students as $student)
 
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <strong>{{ $student->user->name }}</strong><br>
-                                                        <small>{{ $student->user->email }}</small>
+                                    <li class="list-group-item">
+
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ $student->user->name }}</strong><br>
+                                                <small>{{ $student->user->email }}</small>
+                                            </div>
+
+                                            {{-- VIEW PDF --}}
+                                            <a href="{{ route('student.profile.pdf', $student->id) }}"
+                                            target="_blank"
+                                            class="btn btn-sm btn-outline-primary">
+                                                View Student Profile in PDF
+                                            </a>
+                                        </div>
+
+                                        {{-- STUDENT LOGS --}}
+                                        <div class="mt-3">
+                                            <h6 class="text-muted">Logbook Entries</h6>
+
+                                            @forelse($student->logbooks as $log)
+
+                                                <div class="border rounded p-2 mb-2">
+
+                                                    <div class="d-flex justify-content-between">
+
+                                                        <div>
+                                                            <strong>{{ $log->flight_date }}</strong> |
+                                                            {{ $log->aircraft }} |
+                                                            {{ $log->hours }} hrs
+                                                        </div>
+
+                                                        <div>
+                                                            @if($log->approved)
+
+                                                                <span class="badge bg-success">
+                                                                    Approved
+                                                                </span>
+
+                                                            @else
+
+                                                                <span class="badge bg-warning">
+                                                                    Pending
+                                                                </span>
+
+                                                                {{-- APPROVE BUTTON --}}
+                                                                <form method="POST"
+                                                                    action="{{ route('logbook.approve', $log->id) }}"
+                                                                    class="d-inline">
+                                                                    @csrf
+
+                                                                    <button class="btn btn-sm btn-success">
+                                                                        Approve
+                                                                    </button>
+                                                                </form>
+
+                                                            @endif
+                                                        </div>
+
                                                     </div>
 
-                                                    {{-- 🔥 VIEW PDF --}}
-                                                    <a href="{{ route('student.profile.pdf', $student->id) }}" 
-                                                    target="_blank"
-                                                    class="btn btn-sm btn-outline-primary">
-                                                        View Student Profile in PDF
-                                                    </a>
                                                 </div>
 
-                                                {{-- 🔥 STUDENT LOGS --}}
-                                                <div class="mt-3">
-                                                    <h6 class="text-muted">Logbook Entries</h6>
-                                                    <!-- <form method="GET" action="{{ route('student.profile.pdf', $student->id) }}" target="_blank">
-                                                        <input type="date" name="from">
-                                                        <input type="date" name="to">
-                                                        <button class="btn btn-sm btn-primary">Filter PDF</button>
-                                                    </form> -->
+                                            @empty
 
-                                                    @forelse($student->logbooks as $log)
-                                                        <div class="border rounded p-2 mb-2">
+                                                <p class="text-muted mb-0">
+                                                    No logbook entries yet.
+                                                </p>
 
-                                                            <div class="d-flex justify-content-between">
-                                                                <div>
-                                                                    <strong>{{ $log->flight_date }}</strong> |
-                                                                    {{ $log->aircraft }} |
-                                                                    {{ $log->hours }} hrs
-                                                                </div>
+                                            @endforelse
 
-                                                                <div>
-                                                                    @if($log->approved)
-                                                                        <span class="badge bg-success">Approved</span>
-                                                                    @else
-                                                                        <span class="badge bg-warning">Pending</span>
+                                        </div>
 
-                                                                        {{-- ✅ APPROVE BUTTON --}}
-                                                                        <form method="POST"
-                                                                            action="{{ route('logbook.approve', $log->id) }}"
-                                                                            class="d-inline">
-                                                                            @csrf
-                                                                            <button class="btn btn-sm btn-success">
-                                                                                Approve
-                                                                            </button>
-                                                                        </form>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
+                                    </li>
 
-                                                        </div>
-                                                    @empty
-                                                        <p class="text-muted">No logs yet.</p>
-                                                    @endforelse
-                                                </div>
+                                @empty
 
-                                            </li>
-                                        @endforeach
+                                    {{-- NO STUDENTS ASSIGNED --}}
+                                    <li class="list-group-item text-center py-4">
+
+                                        <div class="text-muted">
+
+                                            <i class="bi bi-people fs-2 d-block mb-2"></i>
+
+                                            <h6 class="mb-1">
+                                                No Students Assigned
+                                            </h6>
+
+                                            <p class="mb-0 small">
+                                                You currently have no students assigned to you.
+                                            </p>
+
+                                        </div>
+
+                                    </li>
+
+                                @endforelse
+
 
                                     </ul>
                                 @endif

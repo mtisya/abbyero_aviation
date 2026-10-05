@@ -295,11 +295,12 @@
                                                                 default      => 'bi-circle-fill'
                                                             };
                                                         @endphp
+                                                        <div>
+                                                            <span class="badge bg-{{ $statusColor }} px-3 py-2">
+                                                                <i class="bi {{ $statusIcon }} me-1"></i>
+                                                                {{ $d->status }}
+                                                            </span>
 
-                                                        <!-- <span class="badge bg-{{ $statusColor }} px-3 py-2">
-                                                            <i class="bi {{ $statusIcon }} me-1"></i>
-                                                            {{ strtoupper($d->status) }}
-                                                        </span> -->
 
                                                     </div>
 
