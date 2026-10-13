@@ -74,9 +74,7 @@
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
                                 <option value="scheduled" {{ $schedule->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                                <option value="completed" {{ $schedule->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                <option value="cancelled" {{ $schedule->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                <option value="maintenance" {{ $schedule->status == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                                <option value="cancelled" {{ $schedule->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>                                
                             </select>
                         </div>
 
