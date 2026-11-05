@@ -48,18 +48,37 @@
             position: fixed;
             width: 60px;
             height: 60px;
-            bottom: 40px;
-            right: 40px;
+            bottom: 25px;
+            right: 100px;
             background-color: #25d366;
             color: #fff;
             border-radius: 50px;
             text-align: center;
             font-size: 28px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 100;
+            z-index: 1030;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        @media (max-width: 480px) {
+
+            .whatsapp-float {
+                width: 52px;
+                height: 52px;
+                bottom: 18px;
+                right: 82px;
+                font-size: 24px;
+            }
+
+            #abbyero-ai-launcher {
+                width: 52px;
+                height: 52px;
+                bottom: 18px;
+                right: 16px;
+            }
+
         }
 
         .hero {

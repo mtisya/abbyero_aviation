@@ -894,4 +894,5 @@
     <script src="assets/js/frontFunctions.v2.min.js" defer></script>
     <script src="assets/js/index.min.js" defer></script>
     <script src="assets/js/main.js" defer></script>
+    @include('components.ai-admissions-assistant')
 </body>

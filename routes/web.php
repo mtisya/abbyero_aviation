@@ -34,7 +34,13 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\InvoiceController;
 
-
+Route::post('/ai/admissions/chat', [
+    \App\Http\Controllers\AI\AdmissionsAssistantController::class,
+    'chat',
+])
+    ->middleware('throttle:20,1')
+    ->name('ai.admissions.chat');
+    
 Route::get('/test-ai', function () {
     $response = Http::withToken(env('OPENAI_API_KEY'))
         ->post('https://api.openai.com/v1/chat/completions', [

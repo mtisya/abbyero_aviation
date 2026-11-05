@@ -190,4 +190,5 @@
             }
         });
     </script>
+    @include('components.ai-admissions-assistant')
 </body>
