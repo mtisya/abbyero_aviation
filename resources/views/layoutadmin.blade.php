@@ -148,4 +148,5 @@ $.ajaxSetup({
 
 
     @stack('scripts')
+@include('components.ai-admissions-assistant')
 </body>
