@@ -239,223 +239,255 @@
                                     </td>
 
                                 </tr>
-                                <div class="modal fade" id="dispatchModal{{ $d->id }}" tabindex="-1">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
 
-                                        <div class="modal-content border-0 shadow-lg">
+<div class="modal fade" id="dispatchModal{{ $d->id }}" tabindex="-1"
+    aria-labelledby="dispatchModalLabel{{ $d->id }}" aria-hidden="true">
 
-                                            {{-- HEADER --}}
-                                            <div class="modal-header border-0 text-white py-3"
-                                                style="background: linear-gradient(#4886a3);">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 
-                                                <div class="d-flex align-items-center w-100 justify-content-between">
+        <div class="modal-content border-0 shadow-lg rounded-3">
 
-                                                    {{-- LEFT SIDE --}}
-                                                    <div class="d-flex align-items-center">
+            {{-- HEADER --}}
+            <div class="modal-header position-relative border-0 text-white py-3"
+                style="background: linear-gradient(135deg, #4886a3, #24536b);">
 
-                                                        <div class="me-3">
-                                                            <i class="bi bi-airplane-engines-fill fs-2 aircraft-glow"></i>
-                                                        </div>
+                <div class="d-flex align-items-center justify-content-between w-100 pe-4">
 
-                                                        <div>
-                                                            <h5 class="mb-0 fw-bold">
-                                                                Flight Dispatch Cockpit
-                                                            </h5>
+                    {{-- LEFT SIDE --}}
+                    <div class="d-flex align-items-center">
 
-                                                            <small class="text-white-50">
-                                                                Dispatch Operations Center
-                                                            </small>
-                                                        </div>
+                        <div class="me-3">
+                            <i class="bi bi-airplane-engines-fill fs-2 aircraft-glow"></i>
+                        </div>
 
-                                                    </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold" id="dispatchModalLabel{{ $d->id }}">
+                                Flight Dispatch Cockpit
+                            </h5>
 
-                                                    {{-- RIGHT SIDE --}}
-                                                    <div class="text-end">
+                            <small class="text-white-50">
+                                Dispatch Operations Center
+                            </small>
+                        </div>
 
-                                                        {{-- Dispatch Number --}}
-                                                        <div class="mb-1 me-2">
-                                                            <span class="badge bg-dark px-3 py-2">
-                                                                {{ $d->dispatch_no }}
-                                                            </span>
-                                                        </div>
+                    </div>
 
-                                                        {{-- Live Status --}}
-                                                        @php
-                                                            $statusColor = match($d->status){
-                                                                'Dispatched' => 'warning',
-                                                                'Completed'  => 'success',
-                                                                'Cancelled'  => 'danger',
-                                                                default      => 'secondary'
-                                                            };
+                    {{-- RIGHT SIDE --}}
+                    <div class="text-end">
 
-                                                            $statusIcon = match($d->status){
-                                                                'Dispatched' => 'bi-send-check-fill',
-                                                                'Completed'  => 'bi-check-circle-fill',
-                                                                'Cancelled'  => 'bi-x-circle-fill',
-                                                                default      => 'bi-circle-fill'
-                                                            };
-                                                        @endphp
-                                                        <div>
-                                                            <span class="badge bg-{{ $statusColor }} px-3 py-2">
-                                                                <i class="bi {{ $statusIcon }} me-1"></i>
-                                                                {{ $d->status }}
-                                                            </span>
+                        <div class="mb-2">
+                            <span class="badge bg-dark px-3 py-2">
+                                {{ $d->dispatch_no }}
+                            </span>
+                        </div>
 
+                        @php
+                            $statusColor = match($d->status) {
+                                'Dispatched' => 'warning',
+                                'Completed'  => 'success',
+                                'Cancelled'  => 'danger',
+                                default      => 'secondary'
+                            };
 
-                                                    </div>
+                            $statusIcon = match($d->status) {
+                                'Dispatched' => 'bi-send-check-fill',
+                                'Completed'  => 'bi-check-circle-fill',
+                                'Cancelled'  => 'bi-x-circle-fill',
+                                default      => 'bi-circle-fill'
+                            };
+                        @endphp
 
-                                                </div>
+                        <span class="badge bg-{{ $statusColor }} px-3 py-2">
+                            <i class="bi {{ $statusIcon }} me-1"></i>
+                            {{ $d->status }}
+                        </span>
 
-                                                <button type="button"
-                                                        class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
-                                                        data-bs-dismiss="modal">
-                                                </button>
+                    </div>
 
-                                            </div>
+                </div>
 
-                                            {{-- BODY --}}
-                                            <div class="modal-body bg-light">
+                {{-- CLOSE BUTTON --}}
+                <button type="button"
+                    class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
 
-                                                <div class="row g-3">
+            </div>
 
-                                                    {{-- AIRCRAFT CARD --}}
-                                                    <div class="col-md-4">
-                                                        <div class="card shadow-sm border-0 h-100">
-                                                            <div class="card-body">
-                                                                <h6 class="text-primary">Aircraft</h6>
+            {{-- BODY --}}
+            <div class="modal-body bg-light p-3">
 
-                                                                <p class="mb-1">
-                                                                    <strong>{{ $d->aircraft?->registration_number }}</strong>
-                                                                </p>
+                <div class="row g-3">
 
-                                                                <span class="badge bg-secondary">
-                                                                    ID: {{ $d->aircraft_id }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                    {{-- AIRCRAFT CARD --}}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h6 class="text-primary fw-bold">
+                                    <i class="bi bi-airplane me-1"></i> Aircraft
+                                </h6>
 
-                                                    {{-- PILOT CARD --}}
-                                                    <div class="col-md-4">
-                                                        <div class="card shadow-sm border-0 h-100">
-                                                            <div class="card-body">
-                                                                <h6 class="text-success">Pilot</h6>
+                                <p class="mb-1 fw-semibold">
+                                    {{ $d->aircraft?->registration_number ?? 'Not assigned' }}
+                                </p>
 
-                                                                <p class="mb-1">
-                                                                    {{ $d->pilot?->name ?? 'Unassigned' }}
-                                                                </p>
+                                <span class="badge bg-secondary">
+                                    ID: {{ $d->aircraft_id ?? '-' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                                                                <span class="badge bg-dark">
-                                                                    ID: {{ $d->pilot_id }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                    {{-- PILOT CARD --}}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h6 class="text-success fw-bold">
+                                    <i class="bi bi-person-fill me-1"></i> Pilot
+                                </h6>
 
-                                                    {{-- STATUS CARD --}}
-                                                    <div class="col-md-4">
-                                                        <div class="card shadow-sm border-0 h-100">
-                                                            <div class="card-body">
-                                                                <h6 class="text-warning">Status</h6>
+                                <p class="mb-1 fw-semibold">
+                                    {{ $d->pilot?->name ?? 'Unassigned' }}
+                                </p>
 
-                                                                <span class="badge bg-{{ $badge }}">
-                                                                    {{ $d->status }}
-                                                                </span>
+                                <span class="badge bg-dark">
+                                    ID: {{ $d->pilot_id ?? '-' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                                                                <div class="mt-2">
-                                                                    <small class="text-muted">
-                                                                        Dispatch Time:
-                                                                    </small><br>
-                                                                    {{ $d->dispatch_time }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                    {{-- STATUS CARD --}}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h6 class="text-warning fw-bold">
+                                    <i class="bi bi-info-circle me-1"></i> Status
+                                </h6>
 
-                                                    {{-- FLIGHT METRICS --}}
-                                                    <div class="col-md-6">
-                                                        <div class="card border-0 shadow-sm">
-                                                            <div class="card-body">
-                                                                <h6>Hobbs Reading</h6>
+                                <span class="badge bg-{{ $statusColor }}">
+                                    {{ $d->status }}
+                                </span>
 
-                                                                <div class="display-6 text-info">
-                                                                    {{ number_format($d->hobbs_out,1) }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        Dispatch Time:
+                                    </small>
+                                    <br>
 
-                                                    <div class="col-md-6">
-                                                        <div class="card border-0 shadow-sm">
-                                                            <div class="card-body">
-                                                                <h6>Tach Reading</h6>
-
-                                                                <div class="display-6 text-success">
-                                                                    {{ number_format($d->tach_out,1) }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {{-- REMARKS --}}
-                                                    <div class="col-12">
-                                                        <div class="card border-0 shadow-sm">
-                                                            <div class="card-body">
-                                                                <h6>Remarks</h6>
-                                                                <p class="mb-0">
-                                                                    {{ $d->remarks ?? 'No remarks recorded' }}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            {{-- FOOTER ACTIONS --}}
-                                            <div class="modal-footer bg-white">
-
-                                                {{-- COMPLETE --}}
-                                                @if($d->status === 'Dispatched')
-                                                    <form action="{{ route('dispatch.complete',$d->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-
-                                                        <button class="btn btn-success">
-                                                            <i class="bi bi-check-circle"></i>
-                                                            Complete Flight
-                                                        </button>
-                                                    </form>
-                                                @endif
-
-                                                @if($d->status === 'Dispatched')
-
-                                                    <form id="cancel-form-{{ $d->id }}"
-                                                            action="{{ route('dispatch.cancel', $d->id) }}"
-                                                            method="POST"
-                                                            class="d-inline">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="button"
-                                                                class="btn btn-warning cancel-btn"
-                                                                data-form="cancel-form-{{ $d->id }}">
-                                                            <i class="bi bi-x-circle"></i>
-                                                            Cancel Dispatch
-                                                        </button>
-                                                    </form>
-
-
-                                                @endif
-
-                                                <button class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                    {{ $d->dispatch_time
+                                        ? $d->dispatch_time->format('d M Y, h:i A')
+                                        : '-' }}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- HOBBS READING --}}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted fw-semibold">
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    Hobbs Reading
+                                </h6>
+
+                                <div class="display-6 text-info fw-bold">
+                                    {{ is_numeric($d->hobbs_out)
+                                        ? number_format((float) $d->hobbs_out, 1)
+                                        : '-' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- TACH READING --}}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted fw-semibold">
+                                    <i class="bi bi-clock-history me-1"></i>
+                                    Tach Reading
+                                </h6>
+
+                                <div class="display-6 text-success fw-bold">
+                                    {{ is_numeric($d->tach_out)
+                                        ? number_format((float) $d->tach_out, 1)
+                                        : '-' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- REMARKS --}}
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="fw-bold">
+                                    <i class="bi bi-chat-left-text me-1"></i>
+                                    Remarks
+                                </h6>
+
+                                <p class="mb-0 text-muted">
+                                    {{ $d->remarks ?? 'No remarks recorded' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- FOOTER ACTIONS --}}
+            <div class="modal-footer bg-white">
+
+                @if($d->status === 'Dispatched')
+
+                    {{-- COMPLETE --}}
+                    <form action="{{ route('dispatch.complete', $d->id) }}"
+                        method="POST">
+                        @csrf
+                        @method('PATCH')
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Complete Flight
+                        </button>
+                    </form>
+
+                    {{-- CANCEL --}}
+                    <form id="cancel-form-{{ $d->id }}"
+                        action="{{ route('dispatch.cancel', $d->id) }}"
+                        method="POST"
+                        class="d-inline">
+
+                        @csrf
+                        @method('PATCH')
+
+                        <button type="button"
+                            class="btn btn-warning cancel-btn"
+                            data-form="cancel-form-{{ $d->id }}">
+
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancel Dispatch
+                        </button>
+
+                    </form>
+
+                @endif
+
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
                             @empty
 

@@ -1,17 +1,16 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\AircraftTachHistory;
+use App\Models\BlockTimeRequest;
+use App\Models\Flight;
+use App\Models\FlightSchedule;
+use App\Models\Logbook;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\BlockTimeRequest;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
-use App\Models\Logbook;
-use App\Models\FlightSchedule;
-use App\Models\User;
-use App\Models\AircraftTachHistory;
-
 
 class AdminController extends Controller
 {
@@ -26,7 +25,7 @@ class AdminController extends Controller
 
         $logs = Logbook::with('flight')->get();
 
-        $totalHours = $logs->sum('hours');
+        $totalHours    = $logs->sum('hours');
         $approvedHours = $logs->where('approved', true)->sum('hours');
 
         $schedules = FlightSchedule::with('flight')
@@ -51,6 +50,110 @@ class AdminController extends Controller
             ->groupBy('aircraft')
             ->get();
 
+        // Aircraft availability based on actual maintenance schedules.
+        $aircraftAvailability = Flight::with([
+            'maintenanceSchedules.maintenanceType',
+        ])->get()->map(function ($aircraft) {
+
+            $currentTach = (float) ($aircraft->current_tach ?? 0);
+
+            $maintenanceItems = $aircraft->maintenanceSchedules
+                ->map(function ($schedule) use ($currentTach) {
+
+                    $type = $schedule->maintenanceType;
+
+                    $hasTachDue = $schedule->next_due_tach !== null;
+                    $hasDateDue = $schedule->next_due_date !== null;
+
+                    $remainingHours = $hasTachDue
+                        ? (float) $schedule->next_due_tach - $currentTach
+                        : null;
+
+                    $remainingDays = $hasDateDue
+                        ? Carbon::today()->diffInDays(
+                        Carbon::parse($schedule->next_due_date)->startOfDay(),
+                        false
+                    )
+                        : null;
+
+                    $intervalHours = $schedule->interval_hours ?? $type?->default_interval_hours;
+
+                    $intervalDays = $schedule->interval_days ?? $type?->default_interval_days;
+
+                    // Match MaintenanceService warning thresholds.
+                    $warningHours = $type?->default_interval_hours
+                        ? max(5, round($type->default_interval_hours * 0.20))
+                        : 10;
+
+                    $warningDays = $type?->default_interval_days
+                        ? max(7, round($type->default_interval_days * 0.10))
+                        : 30;
+
+                    $isOverdue =
+                        ($remainingHours !== null && $remainingHours <= 0) ||
+                        ($remainingDays !== null && $remainingDays <= 0);
+
+                    $isDueSoon = ! $isOverdue && (
+                        ($remainingHours !== null && $remainingHours <= $warningHours) ||
+                        ($remainingDays !== null && $remainingDays <= $warningDays)
+                    );
+
+                    $status = $isOverdue
+                        ? 'overdue'
+                        : ($isDueSoon ? 'due_soon' : 'serviceable');
+
+                    // Calculate progress using whichever interval is further advanced.
+                    $progressValues = [];
+
+                    if ($intervalHours && $intervalHours > 0 && $remainingHours !== null) {
+                        $progressValues[] = (
+                            ($intervalHours - $remainingHours) / $intervalHours
+                        ) * 100;
+                    }
+
+                    if ($intervalDays && $intervalDays > 0 && $remainingDays !== null) {
+                        $progressValues[] = (
+                            ($intervalDays - $remainingDays) / $intervalDays
+                        ) * 100;
+                    }
+
+                    $progress = count($progressValues)
+                        ? round(max(0, min(100, max($progressValues))))
+                        : null;
+
+                    return [
+                        'reminder'        => $type?->name ?? $schedule->description ?? 'Maintenance',
+                        'remaining_hours' => $remainingHours !== null
+                            ? round(max(0, $remainingHours), 1)
+                            : null,
+                        'remaining_days'  => $remainingDays,
+                        'due_tach'        => $schedule->next_due_tach,
+                        'due_date'        => $schedule->next_due_date,
+                        'status'          => $status,
+                        'progress'        => $progress,
+
+                        // Used to order the most urgent item first.
+                        'priority'        => match ($status) {
+                            'overdue'  => 1,
+                            'due_soon' => 2,
+                            default    => 3,
+                        },
+                    ];
+                })
+                ->sortBy(function ($item) {
+                    return ($item['priority'] * 1000)
+                         - ($item['progress'] ?? 0);
+                })
+                ->values();
+
+            return [
+                'registration' => $aircraft->registration_number,
+                'model'        => $aircraft->aircraft_model,
+                'current_tach' => $currentTach,
+                'maintenance'  => $maintenanceItems,
+            ];
+        });
+
         $flightStats = FlightSchedule::select('status')
             ->selectRaw('COUNT(*) as total')
             ->groupBy('status')
@@ -63,10 +166,10 @@ class AdminController extends Controller
         $studentsCount = User::where('role', 'student')->count();
 
         $instructorStats = \DB::table('logbooks')
-        ->join('users', 'logbooks.approved_by', '=', 'users.id')
-        ->select('users.name', \DB::raw('COUNT(logbooks.id) as approvals'))
-        ->groupBy('users.name')
-        ->get();
+            ->join('users', 'logbooks.approved_by', '=', 'users.id')
+            ->select('users.name', \DB::raw('COUNT(logbooks.id) as approvals'))
+            ->groupBy('users.name')
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalHours',
@@ -80,71 +183,72 @@ class AdminController extends Controller
             'flightStats',
             'monthlyHours',
             'studentsCount',
-            'instructorStats'
+            'instructorStats',
+            'aircraftAvailability'
         ));
     }
 
     public function blockTimeRequests()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    abort_unless(
-        $user && $user->role === 'admin',
-        403
-    );
+        abort_unless(
+            $user && $user->role === 'admin',
+            403
+        );
 
-    $blockTimeRequests = BlockTimeRequest::with([
-        'requester',
-        'flight',
-        'schedule',
-        'approver',
-    ])
-    ->latest()
-    ->paginate(15);
+        $blockTimeRequests = BlockTimeRequest::with([
+            'requester',
+            'flight',
+            'schedule',
+            'approver',
+        ])
+            ->latest()
+            ->paginate(15);
 
-    return view(
-        'admin.block-time-requests.index',
-        compact('blockTimeRequests')
-    );
-    }
-    public function approveBlockTimeRequest(
-    BlockTimeRequest $blockTimeRequest
-) {
-    $user = Auth::user();
-
-    abort_unless(
-        $user && $user->role === 'admin',
-        403
-    );
-
-    if (!$blockTimeRequest->isPending()) {
-        return back()->with(
-            'error',
-            'This block-time request has already been processed.'
+        return view(
+            'admin.block-time-requests.index',
+            compact('blockTimeRequests')
         );
     }
+    public function approveBlockTimeRequest(
+        BlockTimeRequest $blockTimeRequest
+    ) {
+        $user = Auth::user();
 
-    $blockTimeRequest->update([
-        'status' => BlockTimeRequest::STATUS_APPROVED,
-        'approved_by' => $user->id,
-        'approved_at' => now(),
-    ]);
+        abort_unless(
+            $user && $user->role === 'admin',
+            403
+        );
 
-    return back()->with(
-        'success',
-        'Additional block time approved successfully.'
-    );
-}
+        if (! $blockTimeRequest->isPending()) {
+            return back()->with(
+                'error',
+                'This block-time request has already been processed.'
+            );
+        }
+
+        $blockTimeRequest->update([
+            'status'      => BlockTimeRequest::STATUS_APPROVED,
+            'approved_by' => $user->id,
+            'approved_at' => now(),
+        ]);
+
+        return back()->with(
+            'success',
+            'Additional block time approved successfully.'
+        );
+    }
 
     public function tachHistory()
     {
         $histories = AircraftTachHistory::with([
             'aircraft',
             'logbook.student',
-            'user'
+            'user',
         ])
-        ->latest()
-        ->paginate(5);
+            ->latest()
+            ->paginate(5);
 
         return view('admin.tach-history', compact('histories'));
     }
@@ -162,13 +266,12 @@ class AdminController extends Controller
         }
 
         $path = $request->file('profile_image')
-                        ->store('profile-images', 'public');
+            ->store('profile-images', 'public');
 
         $user->update([
-            'profile_image' => $path
+            'profile_image' => $path,
         ]);
 
         return back()->with('success', 'Profile picture updated successfully.');
     }
 }
-

@@ -265,45 +265,208 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Aircraft Availability -->
-                <div class="col-lg-4">
-                    <div class="card shadow-sm rounded-4 p-3 h-100">
-                        <h6>Aircraft Availability</h6>
 
-                        @foreach($aircraftHours as $aircraft)
-                            @php
-                                $hours = $aircraft->total_hours;
-                                $color = $hours > 95 ? 'danger' : ($hours > 80 ? 'warning' : 'success');
-                            @endphp
+<!-- Right Column: Aircraft Availability -->
+<div class="col-lg-4">
+    <div class="card shadow-sm rounded-4 p-3 h-100">
 
-                            <div class="mb-3">
-                                <strong>{{ $aircraft->aircraft }}</strong>
-                                <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar bg-{{ $color }}" role="progressbar"
-                                        style="width: {{ min($hours, 100) }}%">
-                                        {{ $hours }} hrs
-                                    </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-airplane-engines text-primary me-1"></i>
+                Aircraft Availability
+            </h6>
+
+            <span class="badge bg-light text-dark">
+                {{ $aircraftAvailability->count() }} Aircraft
+            </span>
+        </div>
+
+        @forelse($aircraftAvailability as $aircraft)
+
+            @php
+                $maintenance = $aircraft['maintenance']->first();
+
+                $status = $maintenance['status'] ?? 'serviceable';
+
+                $statusColor = match($status) {
+                    'overdue' => 'danger',
+                    'due_soon' => 'warning',
+                    default => 'success'
+                };
+
+                $statusLabel = match($status) {
+                    'overdue' => 'Maintenance Overdue',
+                    'due_soon' => 'Due Soon',
+                    default => 'Serviceable'
+                };
+
+                $progressColor = match($status) {
+                    'overdue' => 'bg-danger',
+                    'due_soon' => 'bg-warning',
+                    default => 'bg-success'
+                };
+            @endphp
+
+            <div class="border rounded-3 p-3 mb-3">
+
+                {{-- AIRCRAFT DETAILS --}}
+                <div class="d-flex justify-content-between align-items-start mb-2">
+
+                    <div>
+                        <strong class="d-block">
+                            {{ $aircraft['registration'] ?? 'Unregistered' }}
+                        </strong>
+
+                        <small class="text-muted">
+                            {{ $aircraft['model'] ?? 'Aircraft' }}
+                        </small>
+                    </div>
+
+                    <span class="badge bg-{{ $statusColor }}">
+                        {{ $statusLabel }}
+                    </span>
+
+                </div>
+
+                {{-- CURRENT TACH --}}
+                <div class="d-flex justify-content-between mb-2">
+                    <small class="text-muted">Current Tach</small>
+
+                    <strong>
+                        {{ number_format($aircraft['current_tach'], 1) }} hrs
+                    </strong>
+                </div>
+
+                @if($maintenance)
+
+                    <div class="border-top pt-2">
+
+                        <small class="text-muted d-block mb-1">
+                            Next Maintenance
+                        </small>
+
+                        <strong class="d-block mb-2">
+                            {{ $maintenance['reminder'] }}
+                        </strong>
+
+                        {{-- PROGRESS --}}
+                        @if($maintenance['progress'] !== null)
+
+                            <div class="progress mb-2" style="height: 9px;">
+                                <div
+                                    class="progress-bar {{ $progressColor }}"
+                                    role="progressbar"
+                                    style="width: {{ $maintenance['progress'] }}%"
+                                    aria-valuenow="{{ $maintenance['progress'] }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100">
                                 </div>
                             </div>
-                        @endforeach
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <small class="text-muted">
+                                    Maintenance interval used
+                                </small>
+
+                                <small class="fw-semibold">
+                                    {{ $maintenance['progress'] }}%
+                                </small>
+                            </div>
+
+                        @endif
+
+                        {{-- REMAINING HOURS --}}
+                        @if($maintenance['remaining_hours'] !== null)
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">
+                                    Hours remaining
+                                </small>
+
+                                <strong class="text-{{ $statusColor }}">
+                                    {{ number_format($maintenance['remaining_hours'], 1) }} hrs
+                                </strong>
+                            </div>
+                        @endif
+
+                        {{-- REMAINING DAYS --}}
+                        @if($maintenance['remaining_days'] !== null)
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">
+                                    Days remaining
+                                </small>
+
+                                <strong class="text-{{ $statusColor }}">
+                                    {{ max(0, $maintenance['remaining_days']) }} days
+                                </strong>
+                            </div>
+                        @endif
+
+                        {{-- DUE DATE --}}
+                        @if($maintenance['due_date'])
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Next due date</small>
+
+                                <small class="fw-semibold">
+                                    {{ \Carbon\Carbon::parse($maintenance['due_date'])->format('d M Y') }}
+                                </small>
+                            </div>
+                        @endif
 
                     </div>
-                </div>
+
+                @else
+
+                    <div class="border-top pt-2">
+                        <small class="text-muted">
+                            No maintenance schedule configured.
+                        </small>
+                    </div>
+
+                @endif
+
+            </div>
+
+        @empty
+
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-airplane fs-2"></i>
+                <p class="mb-0 mt-2">
+                    No aircraft registered.
+                </p>
+            </div>
+
+        @endforelse
+
+    </div>
+</div>
 
             </div>
 
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+            <script type="application/json" id="dashboard-chart-data">
+                {
+                    "aircraftLabels": @json($aircraftHours->pluck('aircraft')),
+                    "aircraftHours": @json($aircraftHours->pluck('total_hours')),
+                    "flightLabels": @json($flightStats->keys()),
+                    "flightValues": @json($flightStats->values()),
+                    "monthlyLabels": @json($monthlyHours->pluck('month')),
+                    "monthlyHours": @json($monthlyHours->pluck('total_hours'))
+                }
+            </script>
+
             <script>
+                const chartData = JSON.parse(document.getElementById('dashboard-chart-data').textContent);
+
                 // Aircraft Hours
                 new Chart(document.getElementById('aircraftHoursChart'), {
                     type: 'bar',
                     data: {
-                        labels: @json($aircraftHours->pluck('aircraft')),
+                        labels: chartData.aircraftLabels,
                         datasets: [{
                             label: 'Hours',
-                            data: @json($aircraftHours->pluck('total_hours'))
+                            data: chartData.aircraftHours
                         }]
                     }
                 });
@@ -312,9 +475,9 @@
                 new Chart(document.getElementById('flightStatusChart'), {
                     type: 'doughnut',
                     data: {
-                        labels: @json($flightStats->keys()),
+                        labels: chartData.flightLabels,
                         datasets: [{
-                            data: @json($flightStats->values())
+                            data: chartData.flightValues
                         }]
                     }
                 });
@@ -323,10 +486,10 @@
                 new Chart(document.getElementById('monthlyChart'), {
                     type: 'line',
                     data: {
-                        labels: @json($monthlyHours->pluck('month')),
+                        labels: chartData.monthlyLabels,
                         datasets: [{
                             label: 'Hours',
-                            data: @json($monthlyHours->pluck('total_hours'))
+                            data: chartData.monthlyHours
                         }]
                     }
                 });
@@ -340,8 +503,9 @@
 
                 });
             </script>
+            <script type="application/json" id="notification-data">@json(auth()->user()->unreadNotifications)</script>
             <script>
-                const notifications = @json(auth()->user()->unreadNotifications);
+                const notifications = JSON.parse(document.getElementById('notification-data').textContent);
             </script>
 
 @endsection

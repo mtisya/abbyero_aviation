@@ -33,6 +33,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\UserTimezoneController;
 
 Route::post('/ai/admissions/chat', [
     \App\Http\Controllers\AI\AdmissionsAssistantController::class,
@@ -53,6 +54,13 @@ Route::get('/test-ai', function () {
     // return $response->json();
     return "This is a simulated AI response";
 });
+
+Route::middleware('auth')->post(
+    '/user/timezone',
+    [UserTimezoneController::class, 'update']
+)->name('user.timezone.update');
+
+
 Route::post('/apply', [
     ApplicationController::class,
     'store',
@@ -221,7 +229,9 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
 Route::get('/instructor/logbook/{id}', [InstructorController::class, 'showLogbook']);
 Route::post('/logbook/approve/{id}', [LogbookController::class, 'approve']);
 Route::post('/notifications/read-one/{id}', function ($id) {
-    $notification = auth()->user()->notifications()->findOrFail($id);
+    /** @var \App\Models\User $user */
+    $user = auth()->user();
+    $notification = $user->notifications()->findOrFail($id);
     $notification->markAsRead();
 
     return response()->json(['success' => true]);

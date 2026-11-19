@@ -174,6 +174,55 @@
             }
         });
     </script>
+        @auth
+        <script>
+            (function () {
+                const browserTimeZone =
+                    Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                const csrfToken =
+                    document.querySelector('meta[name="csrf-token"]')?.content;
+
+                if (!browserTimeZone || !csrfToken) {
+                    return;
+                }
+
+                fetch("{{ route('user.timezone.update') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        timezone: browserTimeZone
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(
+                            `Timezone sync failed: ${response.status}`
+                        );
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        console.warn(
+                            'Browser timezone was not saved.'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.warn(
+                        'Unable to sync browser timezone:',
+                        error
+                    );
+                });
+            })();
+        </script>
+    @endauth
 
     @stack('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

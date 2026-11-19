@@ -21,10 +21,10 @@ class Dispatch extends Model
         'remarks',
         'dispatched_by'
     ];
-     protected $casts = [
+    protected $casts = [
         'dispatch_time' => 'datetime',
+        'last_reminder_sent_at' => 'datetime',
     ];
-
     public const STATUS_DISPATCHED = 'Dispatched';
     public const STATUS_IN_FLIGHT = 'in_flight';
     public const STATUS_COMPLETED = 'completed';

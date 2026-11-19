@@ -78,9 +78,15 @@ window.openDispatchModal = function (event) {
     window.currentDispatchEvent.currentTach = currentTach;
 
 
-    const hoursRemaining = safeNum(
-        p.hours_remaining
-    );
+    const parsedHoursRemaining = Number(p.hours_remaining);
+
+    const hoursRemaining =
+        p.hours_remaining !== null &&
+        p.hours_remaining !== undefined &&
+        p.hours_remaining !== '' &&
+        Number.isFinite(parsedHoursRemaining)
+            ? parsedHoursRemaining
+            : null;
     // =========================================
     // CURRENT FLIGHT VALUES
     // =========================================
@@ -93,11 +99,13 @@ window.openDispatchModal = function (event) {
     // =========================================
     // INSPECTION LOGIC
     // =========================================
-    const grounded =
-        p.aircraft_status === 'grounded';
+    const maintenanceStatus = String(
+        p.maintenance_status || 'unknown'
+    ).toLowerCase().trim();
 
-    const dueSoon =
-        p.aircraft_status === 'due_soon';
+    const grounded = maintenanceStatus === 'grounded';
+
+    const dueSoon = maintenanceStatus === 'due_soon';
 
     // =========================================
     // WARNING BANNER
@@ -126,7 +134,9 @@ window.openDispatchModal = function (event) {
             banner.innerHTML = `
                 ⚠ MAINTENANCE DUE SOON
                 <div class="small mt-1">
-                    ${hoursRemaining.toFixed(1)} hrs remaining
+                    ${hoursRemaining !== null
+                        ? `${hoursRemaining.toFixed(1)} hrs remaining`
+                        : 'Maintenance due soon'}
                 </div>
             `;
 
@@ -278,11 +288,13 @@ window.openDispatchModal = function (event) {
 
     if (serviceEl) {
 
-        let status =
-            `${hoursRemaining.toFixed(1)} hrs remaining`;
+        let status = hoursRemaining !== null
+            ? `${hoursRemaining.toFixed(1)} hrs remaining`
+            : 'N/A';
 
-        let cls = 'bg-success';
-
+        let cls = hoursRemaining !== null
+            ? 'bg-success'
+            : 'bg-secondary';
 
         if (grounded) {
 
@@ -291,15 +303,15 @@ window.openDispatchModal = function (event) {
 
         } else if (dueSoon) {
 
-            cls = 'bg-warning text-dark';
+            status = hoursRemaining !== null
+                ? `${hoursRemaining.toFixed(1)} hrs remaining`
+                : 'Maintenance Due Soon';
 
+            cls = 'bg-warning text-dark';
         }
 
-
         serviceEl.textContent = status;
-
-        serviceEl.className =
-            `badge px-3 py-2 ${cls}`;
+        serviceEl.className = `badge px-3 py-2 ${cls}`;
     }
 
     // =========================================

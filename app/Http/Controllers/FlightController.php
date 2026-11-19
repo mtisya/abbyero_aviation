@@ -1,21 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Flight;
-use App\Models\Logbook;
-use App\Models\FlightSchedule;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\FlightApplicationMail;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
+use App\Models\Flight;
+use App\Models\FlightSchedule;
 use App\Models\Instructor;
 use App\Models\Student;
 use App\Models\User;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class FlightController extends Controller
 {
@@ -32,9 +30,9 @@ class FlightController extends Controller
     {
         // 1. Validate the form data
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:50',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'phone'   => 'required|string|max:50',
             'message' => 'nullable|string|max:2000',
         ]);
 
@@ -50,7 +48,7 @@ class FlightController extends Controller
         // 4. Return JSON response for AJAX
         return response()->json([
             'success' => true,
-            'message' => 'Your application has been submitted successfully! Admin will review it and get back to you soon.'
+            'message' => 'Your application has been submitted successfully! Admin will review it and get back to you soon.',
         ]);
     }
     /**
@@ -79,8 +77,8 @@ class FlightController extends Controller
 
         return response()->json(
             $flights->map(fn($f) => [
-                'id' => $f->id,
-                'title' => $f->registration_number
+                'id'    => $f->id,
+                'title' => $f->registration_number,
             ])
         );
     }
@@ -90,103 +88,113 @@ class FlightController extends Controller
         Instructor $instructor,
         Student $students
     ) {
-       $schedules = FlightSchedule::with([
-            'flight:id,registration_number,current_hobbs,current_tach,status',
+        $schedules = FlightSchedule::with([
+            'flight:id,registration_number,current_hobbs,current_tach,status,maintenance_status',
+            'flight.maintenanceSchedules:id,aircraft_id,next_due_tach',
             'user:id,name',
             'instructor:id,name',
-            'dispatch'
+            'dispatch',
         ])->get();
 
-
         $statusColors = [
-            'scheduled' => '#3788d8',
-            'completed' => '#2ecc71',
-            'cancelled' => '#e74c3c',
+            'scheduled'   => '#3788d8',
+            'completed'   => '#2ecc71',
+            'cancelled'   => '#e74c3c',
             'maintenance' => '#8e44ad',
-            'dispatched' => '#f39c12',
+            'dispatched'  => '#f39c12',
         ];
-
 
         $events = $schedules->map(function ($s) use ($statusColors) {
 
-    $aircraft = $s->flight;
+            $aircraft = $s->flight;
+            // Read the persisted maintenance status, not the general aircraft status.
+            $maintenanceStatus = $aircraft
+                ? strtolower(trim(
+                    (string) (
+                        $aircraft->getRawOriginal('maintenance_status')
+                        ?? 'serviceable'
+                    )
+                ))
+                : 'unknown';
 
-    $aircraftReg = $aircraft?->registration_number
-        ?? 'Unknown Aircraft';
+            // Keep missing hour-based maintenance data as null.
+            $hoursRemaining = $aircraft?->hours_remaining;
 
-    /*
-     * Normalize schedule status.
-     */
-    $status = strtolower(trim($s->status ?? 'scheduled'));
+            $hoursRemaining = is_null($hoursRemaining)
+                ? null
+                : (float) $hoursRemaining;
 
-    /*
-     * If a dispatch exists, make sure dispatched
-     * status is reflected on the calendar.
-     */
-    if ($s->dispatch) {
+            $aircraftReg = $aircraft?->registration_number ?? 'Unknown Aircraft';
 
-        $dispatchStatus = strtolower(
-            trim($s->dispatch->status ?? '')
-        );
+            /*
+            * Normalize schedule status.
+            */
+            $status = strtolower(trim($s->status ?? 'scheduled'));
 
-        if (in_array($dispatchStatus, [
-            'dispatched',
-            'in flight',
-        ], true)) {
-            $status = $dispatchStatus;
-        }
-    }
+            /*
+            * If a dispatch exists, make sure dispatched
+            * status is reflected on the calendar.
+            */
+            if ($s->dispatch) {
 
-    /*
-     * Determine calendar color.
-     */
-    $color = $statusColors[$status] ?? '#6c757d';
+                $dispatchStatus = strtolower(
+                    trim($s->dispatch->status ?? '')
+                );
+
+                if (in_array($dispatchStatus, [
+                    'dispatched',
+                    'in flight',
+                ], true)) {
+                    $status = $dispatchStatus;
+                }
+            }
+
+            /*
+            * Determine calendar color.
+            */
+            $color = $statusColors[$status] ?? '#6c757d';
 
             $dispatchNo = $s->dispatch?->dispatch_no;
 
-            if (!$dispatchNo) {
+            if (! $dispatchNo) {
                 $dispatchNo = 'ABY-LLC-' .
-                    now()->format('Ymd') . '-' .
-                    strtoupper(Str::random(5));
+                now()->format('Ymd') . '-' .
+                strtoupper(Str::random(5));
             }
             return [
 
-                'id' => $s->id,
+                'id'              => $s->id,
 
-                'resourceId' => $s->flight_id,
+                'resourceId'      => $s->flight_id,
 
-                'title' => $aircraftReg,
+                'title'           => $aircraftReg,
 
-
-                'start' => $s->start_time
+                'start'           => $s->start_time
                     ? $s->start_time->utc()->toIso8601String()
                     : null,
 
-
-                'end' => $s->end_time
+                'end'             => $s->end_time
                     ? $s->end_time->utc()->toIso8601String()
                     : null,
 
-
                 'backgroundColor' => $color,
 
-                'borderColor' => $color,
+                'borderColor'     => $color,
 
-                'textColor' => '#ffffff',
+                'textColor'       => '#ffffff',
 
-
-                'extendedProps' => [
+                'extendedProps'   => [
 
                     /*
                     |--------------------------------------------------------------------------
                     | IDENTIFIERS
                     |--------------------------------------------------------------------------
                     */
-                    'schedule_id' => $s->id,
-                    'aircraft_id' => $s->flight_id,
-                    'flight_id' => $s->flight_id,
-                    'pilot_id' => $s->user_id,
-                    'instructor_id' => $s->instructor_id,
+                    'schedule_id'     => $s->id,
+                    'aircraft_id'     => $s->flight_id,
+                    'flight_id'       => $s->flight_id,
+                    'pilot_id'        => $s->user_id,
+                    'instructor_id'   => $s->instructor_id,
 
                     /*
                     |--------------------------------------------------------------------------
@@ -194,12 +202,11 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'pilot' => $s->user?->name,
+                    'pilot'           => $s->user?->name,
 
-                    'instructor' => $s->instructor?->name,
+                    'instructor'      => $s->instructor?->name,
 
-                    'copilot' => $s->instructor?->name,
-
+                    'copilot'         => $s->instructor?->name,
 
                     /*
                     |--------------------------------------------------------------------------
@@ -207,16 +214,15 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'status' => $status,
+                    'status'          => $status,
 
-                    'user' => $s->user?->name ?? 'System',
+                    'user'            => $s->user?->name ?? 'System',
 
-                    'departure' => $s->departure,
+                    'departure'       => $s->departure,
 
-                    'destination' => $s->destination,
+                    'destination'     => $s->destination,
 
-                    'remarks' => $s->remarks,
-
+                    'remarks'         => $s->remarks,
 
                     /*
                     |--------------------------------------------------------------------------
@@ -224,16 +230,13 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'hobbs_start' => (float) ($s->hobbs_start ?? 0),
+                    'hobbs_start'     => (float) ($s->hobbs_start ?? 0),
 
-                    'hobbs_end' => (float) ($s->hobbs_end ?? 0),
+                    'hobbs_end'       => (float) ($s->hobbs_end ?? 0),
 
+                    'tach_start'      => (float) ($s->tach_start ?? 0),
 
-                    'tach_start' => (float) ($s->tach_start ?? 0),
-
-                    'tach_end' => (float) ($s->tach_end ?? 0),
-
-
+                    'tach_end'        => (float) ($s->tach_end ?? 0),
 
                     /*
                     |--------------------------------------------------------------------------
@@ -241,15 +244,13 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'current_hobbs' => (float) (
+                    'current_hobbs'   => (float) (
                         $aircraft?->current_hobbs ?? 0
                     ),
 
-                    'current_tach' => (float) (
+                    'current_tach'    => (float) (
                         $aircraft?->current_tach ?? 0
                     ),
-
-
 
                     /*
                     |--------------------------------------------------------------------------
@@ -257,9 +258,9 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'aircraft_status' => $aircraft?->status
-                        ?? 'available',
-
+                    'aircraft_status' => $aircraft?->status ?? 'available',
+                    'maintenance_status' => $maintenanceStatus,
+                    'hours_remaining' => $hoursRemaining,
 
                     /*
                     |--------------------------------------------------------------------------
@@ -267,18 +268,17 @@ class FlightController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    'dispatch_no' => $dispatchNo ?? (
+                    'dispatch_no'     => $dispatchNo ?? (
                         'ABY-LLC-' .
                         now()->format('Ymd') . '-' .
                         strtoupper(Str::random(5))
                     ),
 
-                ]
+                ],
 
             ];
 
         });
-
 
         return response()->json($events);
     }
@@ -290,16 +290,16 @@ class FlightController extends Controller
     public function createSchedule(Request $request)
     {
         $validated = $request->validate([
-            'flight_id' => ['required', 'integer', 'exists:flights,id'],
+            'flight_id'     => ['required', 'integer', 'exists:flights,id'],
             'instructor_id' => ['nullable', 'exists:users,id'],
-            'start' => ['required', 'date'],
-            'end' => ['required', 'date', 'after:start'],
+            'start'         => ['required', 'date'],
+            'end'           => ['required', 'date', 'after:start'],
         ]);
 
         try {
 
             $start = Carbon::parse($validated['start']);
-            $end = Carbon::parse($validated['end']);
+            $end   = Carbon::parse($validated['end']);
 
             // ==================================================
             // AIRCRAFT CONFLICT CHECK
@@ -320,7 +320,7 @@ class FlightController extends Controller
             if ($hasConflict) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'This aircraft is already scheduled during the selected time period.'
+                    'message' => 'This aircraft is already scheduled during the selected time period.',
                 ], 422);
             }
 
@@ -331,35 +331,34 @@ class FlightController extends Controller
 
             $instructorId = $student?->instructor_id;
 
-
             $schedule = FlightSchedule::create([
-                'flight_id' => $validated['flight_id'],
-                'user_id' => auth()->id(),
+                'flight_id'     => $validated['flight_id'],
+                'user_id'       => auth()->id(),
                 'instructor_id' => $instructorId,
-                'start_time' => $start,
-                'end_time' => $end,
-                'status' => 'scheduled',
+                'start_time'    => $start,
+                'end_time'      => $end,
+                'status'        => 'scheduled',
             ]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Flight scheduled successfully.',
-                'schedule_id' => $schedule->id,
-                'flight_id' => $schedule->flight_id,
-                'pilot_id' => $schedule->user_id,
+                'success'       => true,
+                'message'       => 'Flight scheduled successfully.',
+                'schedule_id'   => $schedule->id,
+                'flight_id'     => $schedule->flight_id,
+                'pilot_id'      => $schedule->user_id,
                 'instructor_id' => $schedule->instructor_id,
             ]);
 
         } catch (\Exception $e) {
 
-            \Log::error('Schedule Creation Failed', [
+            Log::error('Schedule Creation Failed', [
                 'user_id' => auth()->id(),
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Unable to create schedule at this time.'
+                'message' => 'Unable to create schedule at this time.',
             ], 500);
         }
     }
@@ -375,13 +374,13 @@ class FlightController extends Controller
         if ($schedule->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to edit this schedule'
+                'message' => 'You are not authorized to edit this schedule',
             ], 403);
         }
 
         // ✅ REMOVE ->utc()
         $start = Carbon::parse($request->start);
-        $end = Carbon::parse($request->end);
+        $end   = Carbon::parse($request->end);
 
         $conflict = FlightSchedule::where('flight_id', $schedule->flight_id)
             ->where('id', '!=', $id)
@@ -401,20 +400,19 @@ class FlightController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Time conflict detected'
+                'message' => 'Time conflict detected',
             ]);
         }
 
         $schedule->update([
             'start_time' => $start,
-            'end_time' => $end
+            'end_time'   => $end,
         ]);
 
         return response()->json([
-            'success' => true
+            'success' => true,
         ]);
     }
-
 
     /**
      * Show all schedules (dashboard)
@@ -433,7 +431,6 @@ class FlightController extends Controller
      * Edit schedule form
      */
 
-
     public function editSchedule($id)
     {
         $schedule = FlightSchedule::findOrFail($id);
@@ -442,7 +439,7 @@ class FlightController extends Controller
         if ($schedule->user_id !== Auth::id()) {
 
             return back()->with([
-                'error' => 'You are not authorized to edit this schedule.'
+                'error' => 'You are not authorized to edit this schedule.',
             ]);
         }
 
@@ -462,18 +459,18 @@ class FlightController extends Controller
         if ($schedule->user_id !== Auth::id()) {
 
             return back()->with([
-                'error' => 'You are not authorized to update this schedule.'
+                'error' => 'You are not authorized to update this schedule.',
             ]);
         }
 
         $request->validate([
-            'flight_id' => 'required|exists:flights,id',
+            'flight_id'  => 'required|exists:flights,id',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time'
+            'end_time'   => 'required|date|after:start_time',
         ]);
 
         $start = Carbon::parse($request->start_time);
-        $end = Carbon::parse($request->end_time);
+        $end   = Carbon::parse($request->end_time);
 
         $conflict = FlightSchedule::where('flight_id', $request->flight_id)
             ->where('id', '!=', $id)
@@ -495,10 +492,10 @@ class FlightController extends Controller
         }
 
         $schedule->update([
-            'flight_id' => $request->flight_id,
+            'flight_id'  => $request->flight_id,
             'start_time' => $start->format('Y-m-d H:i:s'),
-            'end_time' => $end->format('Y-m-d H:i:s'),
-            'status' => $request->status,
+            'end_time'   => $end->format('Y-m-d H:i:s'),
+            'status'     => $request->status,
         ]);
 
         return redirect()
@@ -509,16 +506,16 @@ class FlightController extends Controller
     /**
      * Cancel a schedule
      */
-   public function destroySchedule($id)
+    public function destroySchedule($id)
     {
         $schedule = FlightSchedule::where('id', $id)
             ->where('user_id', Auth::id())
             ->first();
 
-        if (!$schedule) {
+        if (! $schedule) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to delete this schedule.'
+                'message' => 'You are not authorized to delete this schedule.',
             ], 403);
         }
 
@@ -526,7 +523,7 @@ class FlightController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Flight schedule deleted successfully.'
+            'message' => 'Flight schedule deleted successfully.',
         ]);
     }
 
@@ -536,9 +533,9 @@ class FlightController extends Controller
     public function storeSchedule(Request $request)
     {
         $request->validate([
-            'flight_id' => 'required|exists:flights,id',
+            'flight_id'  => 'required|exists:flights,id',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'end_time'   => 'required|date|after:start_time',
         ]);
 
         // Conflict check
@@ -558,11 +555,11 @@ class FlightController extends Controller
         }
 
         FlightSchedule::create([
-            'flight_id' => $request->flight_id,
+            'flight_id'  => $request->flight_id,
             'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'status' => 'scheduled',
-            'user_id' => auth()->id()
+            'end_time'   => $request->end_time,
+            'status'     => 'scheduled',
+            'user_id'    => auth()->id(),
         ]);
 
         return back()->with('success', 'Flight scheduled successfully.');
@@ -580,17 +577,17 @@ class FlightController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'aircraft_model' => 'required|string|max:255',
+            'aircraft_model'      => 'required|string|max:255',
             'registration_number' => 'required|string|max:100',
 
-           'current_hobbs' => 'nullable|numeric|min:0',
-            'current_tach' => 'nullable|numeric|min:0',
-            'hourly_rate' => 'nullable|numeric|min:0',
-            'maintenance_status' => 'required|in:serviceable,due_soon,maintenance,grounded',
-            'status' => 'required|in:Available,Maintenance,Grounded',
+            'current_hobbs'       => 'nullable|numeric|min:0',
+            'current_tach'        => 'nullable|numeric|min:0',
+            'hourly_rate'         => 'nullable|numeric|min:0',
+            'maintenance_status'  => 'required|in:serviceable,due_soon,maintenance,grounded',
+            'status'              => 'required|in:Available,Maintenance,Grounded',
         ]);
 
-       Flight::create([
+        Flight::create([
             'aircraft_model'      => $request->aircraft_model,
             'registration_number' => $request->registration_number,
             'current_hobbs'       => $request->current_hobbs ?? 0,
@@ -608,44 +605,36 @@ class FlightController extends Controller
     public function availableold()
     {
         $query = Flight::with([
-            'maintenanceSchedules.maintenanceType'
+            'maintenanceSchedules.maintenanceType',
         ]);
-
 
         /**
          * Non-admin users only see available aircraft
          */
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
+        if (! auth()->check() || auth()->user()->role !== 'admin') {
 
             $query->where('status', 'available');
 
         }
 
-
         $flights = $query->get();
-
 
         foreach ($flights as $aircraft) {
 
-            $aircraft->maintenance_due = false;
+            $aircraft->maintenance_due     = false;
             $aircraft->maintenance_warning = false;
-            $aircraft->hours_remaining = null;
-            $aircraft->maintenance_type = null;
-
+            $aircraft->hours_remaining     = null;
+            $aircraft->maintenance_type    = null;
 
             foreach ($aircraft->maintenanceSchedules as $schedule) {
-
 
                 if (is_null($schedule->next_due_tach)) {
                     continue;
                 }
 
-
                 $remainingHours =
-                    $schedule->next_due_tach -
-                    $aircraft->current_tach;
-
-
+                $schedule->next_due_tach -
+                $aircraft->current_tach;
 
                 /*
                 |--------------------------------------------------------------------------
@@ -663,13 +652,10 @@ class FlightController extends Controller
                         $remainingHours
                     );
 
-
                     $aircraft->maintenance_type =
-                        $schedule->maintenanceType?->name;
+                    $schedule->maintenanceType?->name;
 
                 }
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -689,8 +675,6 @@ class FlightController extends Controller
 
             }
 
-
-
             /*
             |--------------------------------------------------------------------------
             | Final aircraft display status
@@ -699,158 +683,139 @@ class FlightController extends Controller
 
             $aircraft->display_status = match (true) {
 
-                $aircraft->maintenance_due =>
+                $aircraft->maintenance_due     =>
                 'Maintenance Due',
 
                 $aircraft->maintenance_warning =>
                 'Due Soon',
 
-                default =>
+                default                        =>
                 ucfirst($aircraft->status),
 
             };
 
         }
 
-
         return view(
             'flights.available',
             [
-                'flights' => $flights
+                'flights' => $flights,
             ]
         );
     }
 
     public function available()
-{
-    $query = Flight::with([
-        'maintenanceSchedules.maintenanceType'
-    ]);
+    {
+        $query = Flight::with([
+            'maintenanceSchedules.maintenanceType',
+        ]);
 
-    // Non-admin users only see available aircraft
-    if (!auth()->check() || auth()->user()->role !== 'admin') {
+        // Non-admin users only see available aircraft
+        if (! auth()->check() || auth()->user()->role !== 'admin') {
 
-        $query->where('status', 'available');
+            $query->where('status', 'available');
 
-    }
+        }
 
+        $flights = $query->get();
 
-    $flights = $query->get();
+        foreach ($flights as $aircraft) {
 
-
-    foreach ($flights as $aircraft) {
-
-
-        /*
+            /*
         |--------------------------------------------------------------------------
         | Default values
         |--------------------------------------------------------------------------
         */
-        $aircraft->maintenance_due = false;
-        $aircraft->maintenance_warning = false;
+            $aircraft->maintenance_due     = false;
+            $aircraft->maintenance_warning = false;
 
-        $aircraft->hours_remaining = null;
-        $aircraft->maintenance_type = null;
-        $aircraft->next_due_tach = null;
+            $aircraft->hours_remaining  = null;
+            $aircraft->maintenance_type = null;
+            $aircraft->next_due_tach    = null;
 
-
-        /*
+            /*
         |--------------------------------------------------------------------------
         | Find nearest maintenance schedule
         |--------------------------------------------------------------------------
         */
-        $nextSchedule = $aircraft->maintenanceSchedules
-            ->filter(function ($schedule) {
+            $nextSchedule = $aircraft->maintenanceSchedules
+                ->filter(function ($schedule) {
 
-                return !is_null($schedule->next_due_tach);
+                    return ! is_null($schedule->next_due_tach);
 
-            })
-            ->map(function ($schedule) use ($aircraft) {
+                })
+                ->map(function ($schedule) use ($aircraft) {
 
-                $schedule->remaining =
+                    $schedule->remaining =
                     $schedule->next_due_tach -
                     $aircraft->current_tach;
 
-                return $schedule;
+                    return $schedule;
 
-            })
-            ->sortBy('remaining')
-            ->first();
+                })
+                ->sortBy('remaining')
+                ->first();
 
+            if ($nextSchedule) {
 
-
-        if ($nextSchedule) {
-
-
-            /*
+                /*
             |--------------------------------------------------------------------------
             | Maintenance information
             |--------------------------------------------------------------------------
             */
-            $remainingHours = $nextSchedule->remaining;
+                $remainingHours = $nextSchedule->remaining;
 
+                $aircraft->hours_remaining = round(
+                    $remainingHours,
+                    1
+                );
 
-            $aircraft->hours_remaining = round(
-                $remainingHours,
-                1
-            );
-
-
-            $aircraft->next_due_tach =
+                $aircraft->next_due_tach =
                 $nextSchedule->next_due_tach;
 
-
-            $aircraft->maintenance_type =
+                $aircraft->maintenance_type =
                 $nextSchedule->maintenanceType?->name;
 
-
-
-            /*
+                /*
             |--------------------------------------------------------------------------
             | Maintenance status
             |--------------------------------------------------------------------------
             */
-            if ($remainingHours <= 0) {
+                if ($remainingHours <= 0) {
 
-                $aircraft->maintenance_due = true;
+                    $aircraft->maintenance_due = true;
 
-            } elseif ($remainingHours <= 10) {
+                } elseif ($remainingHours <= 10) {
 
-                $aircraft->maintenance_warning = true;
+                    $aircraft->maintenance_warning = true;
+
+                }
 
             }
 
-        }
-
-
-
-        /*
+            /*
         |--------------------------------------------------------------------------
         | Display Status
         |--------------------------------------------------------------------------
         */
-        $aircraft->display_status = match (true) {
+            $aircraft->display_status = match (true) {
 
-
-            $aircraft->maintenance_due =>
+                $aircraft->maintenance_due     =>
                 'Maintenance Due',
 
-
-            $aircraft->maintenance_warning =>
+                $aircraft->maintenance_warning =>
                 'Due Soon',
 
-
-            default =>
+                default                        =>
                 'Available',
 
-        };
+            };
 
-    }
+        }
 
-
-    return view('flights.available', [
-        'flights' => $flights
-    ]);
+        return view('flights.available', [
+            'flights' => $flights,
+        ]);
     }
 
     public function show($id)
@@ -875,32 +840,32 @@ class FlightController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'aircraft_model' => 'required|string|max:255',
+            'aircraft_model'      => 'required|string|max:255',
             'registration_number' => 'required|string|max:100',
 
-            'current_tach' => 'nullable|numeric|min:0',
-            'current_hobbs' => 'nullable|numeric|min:0',
-            'hourly_rate' => 'nullable|numeric|min:0',
+            'current_tach'        => 'nullable|numeric|min:0',
+            'current_hobbs'       => 'nullable|numeric|min:0',
+            'hourly_rate'         => 'nullable|numeric|min:0',
 
-            'status' => 'required|in:available,maintenance,grounded',
+            'status'              => 'required|in:available,maintenance,grounded',
         ]);
 
         $aircraft = Flight::findOrFail($id);
 
         $aircraft->update([
-            'aircraft_model' => $request->aircraft_model,
+            'aircraft_model'      => $request->aircraft_model,
             'registration_number' => $request->registration_number,
-            'current_tach' => $request->current_tach ?? $aircraft->current_tach,
-            'current_hobbs' => $request->current_hobbs ?? $aircraft->current_hobbs,
-            'hourly_rate' => $request->hourly_rate ?? $aircraft->hourly_rate,
-            'status' => $request->status,
+            'current_tach'        => $request->current_tach ?? $aircraft->current_tach,
+            'current_hobbs'       => $request->current_hobbs ?? $aircraft->current_hobbs,
+            'hourly_rate'         => $request->hourly_rate ?? $aircraft->hourly_rate,
+            'status'              => $request->status,
         ]);
 
         return redirect()
             ->route('flights.available')
             ->with('success', 'Aircraft updated successfully ✈');
     }
-    
+
     public function destroy($id)
     {
         $aircraft = Flight::findOrFail($id);
@@ -926,7 +891,7 @@ class FlightController extends Controller
     public function summary($id)
     {
         $aircraft = Flight::with([
-            'maintenanceSchedules.maintenanceType'
+            'maintenanceSchedules.maintenanceType',
         ])->findOrFail($id);
 
         $currentTach = $aircraft->current_tach ?? 0;
@@ -934,58 +899,81 @@ class FlightController extends Controller
         $reminders = $aircraft->maintenanceSchedules
             ->map(function ($schedule) use ($aircraft, $currentTach) {
 
-                $remainingHours = $schedule->next_due_tach
+                $hasTachDue = ! is_null($schedule->next_due_tach);
+                $hasDateDue = ! is_null($schedule->next_due_date);
+
+                $remainingHours = $hasTachDue
                     ? $schedule->next_due_tach - $currentTach
-                    : 0;
+                    : null;
+
+                $remainingDays = $hasDateDue
+                    ? now()->startOfDay()->diffInDays(
+                    $schedule->next_due_date,
+                    false
+                )
+                    : null;
 
                 $intervalHours = $schedule->maintenanceType?->default_interval_hours;
 
+                // Determine status using the applicable maintenance interval.
+                if ($hasTachDue && $hasDateDue) {
+
+                    $isOverdue = $remainingHours <= 0 || $remainingDays < 0;
+
+                    $isDueSoon = ! $isOverdue && (
+                        $remainingHours <= 10 ||
+                        $remainingDays <= 7
+                    );
+
+                } elseif ($hasTachDue) {
+
+                    $isOverdue = $remainingHours <= 0;
+                    $isDueSoon = ! $isOverdue && $remainingHours <= 10;
+
+                } elseif ($hasDateDue) {
+
+                    $isOverdue = $remainingDays < 0;
+                    $isDueSoon = ! $isOverdue && $remainingDays <= 7;
+
+                } else {
+
+                    $isOverdue = false;
+                    $isDueSoon = false;
+
+                }
+
+                $status = $isOverdue
+                    ? 'Overdue'
+                    : ($isDueSoon ? 'Due Soon' : 'Scheduled');
+
                 return [
+                    'tail_no'   => $aircraft->registration_number,
+                    'aircraft'  => $aircraft->aircraft_model,
+                    'reminder'  => $schedule->maintenanceType?->name ?? 'Maintenance',
+                    'interval'  => $intervalHours,
 
-                    'tail_no' => $aircraft->registration_number,
+                    'remaining' => $remainingHours !== null
+                        ? round(max(0, $remainingHours), 1)
+                        : 0,
 
-                    'aircraft' => $aircraft->aircraft_model,
-
-                    'reminder' => $schedule->maintenanceType?->name ?? 'Maintenance',
-
-                    'interval' => $intervalHours,
-
-                    'remaining' => round(max(0, $remainingHours), 1),
-
-                    'due' => $schedule->next_due_tach
+                    'due'       => $hasTachDue
                         ? round($schedule->next_due_tach, 1)
                         : null,
 
-                    'hours' => round($currentTach, 1),
+                    'hours'     => round($currentTach, 1),
 
-                    'days' => $schedule->next_due_date
-                        ? now()->diffInDays($schedule->next_due_date, false)
-                        : null,
+                    'days'      => $remainingDays,
 
-                    'status' => match (true) {
-
-                        $remainingHours <= 0 => 'Overdue',
-
-                        $remainingHours <= 10 => 'Due Soon',
-
-                        default => 'Scheduled',
-
-                    },
-
+                    'status'    => $status,
                 ];
             })
             ->values();
 
         return response()->json([
-
-            'aircraft_model' => $aircraft->aircraft_model,
-
+            'aircraft_model'      => $aircraft->aircraft_model,
             'registration_number' => $aircraft->registration_number,
-
-            'current_tach' => round($currentTach, 1),
-
-            'reminders' => $reminders
-
+            'current_tach'        => round($currentTach, 1),
+            'reminders'           => $reminders,
         ]);
     }
 }
