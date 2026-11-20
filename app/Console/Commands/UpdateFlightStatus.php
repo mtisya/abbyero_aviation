@@ -11,14 +11,14 @@ class UpdateFlightStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'app:update-flight-status';
+    protected $signature = 'flights:update-status';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Automatically update expired scheduled flights to completed';
 
     /**
      * Execute the console command.
